@@ -42,6 +42,6 @@ public class User {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     public enum Role {
-        USER, OWNER, ADMIN
+        USER, VENDOR, OWNER, ADMIN
     }
 }

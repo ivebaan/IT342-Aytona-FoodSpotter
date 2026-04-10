@@ -22,6 +22,11 @@ public class StallService {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));
 
+        if (user.getRole() == User.Role.USER) {
+            user.setRole(User.Role.VENDOR);
+            userRepository.save(user);
+        }
+
         Stall stall = Stall.builder()
                 .stallName(request.getName())
                 .description(request.getDescription())

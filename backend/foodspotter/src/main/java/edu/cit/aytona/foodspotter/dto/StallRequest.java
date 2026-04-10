@@ -2,6 +2,7 @@ package edu.cit.aytona.foodspotter.dto;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import edu.cit.aytona.foodspotter.validation.AllowedCuisine;
 
 @Data
 public class StallRequest {
@@ -13,6 +14,7 @@ public class StallRequest {
     private String description;
 
     @NotBlank(message = "Cuisine is required")
+    @AllowedCuisine
     private String cuisine;
 
     @NotBlank(message = "Latitude is required")

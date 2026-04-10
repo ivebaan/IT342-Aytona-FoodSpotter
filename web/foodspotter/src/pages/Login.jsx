@@ -9,24 +9,52 @@ export default function Login() {
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  const isValidEmail = (email) => /[^\s@]+@[^\s@]+\.[^\s@]+/.test(email);
+
   const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
     setError(null);
+    setSuccess(false);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const email = form.email.trim();
+    const password = form.password;
+
+    if (!email || !password) {
+      setError('Email and password are required.');
+      return;
+    }
+
+    if (!isValidEmail(email)) {
+      setError('Please enter a valid email address.');
+      return;
+    }
+
     setLoading(true);
     setError(null);
     try {
-      const res = await login(form);
-      localStorage.setItem('token', res.data.accessToken);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
+      const res = await login({ email, password });
+      const accessToken = res?.data?.accessToken;
+      const user = res?.data?.user;
+
+      if (!accessToken || !user) {
+        throw new Error('Invalid login response from server.');
+      }
+
+      localStorage.setItem('token', accessToken);
+      localStorage.setItem('user', JSON.stringify(user));
       setSuccess(true);
       setTimeout(() => navigate('/dashboard'), 1500);
     } catch (err) {
       const errData = err.response?.data?.error;
-      setError(errData?.details || errData?.message || 'Login failed. Please try again.');
+      setError(
+        errData?.details ||
+          errData?.message ||
+          err.message ||
+          'Login failed. Please try again.',
+      );
     } finally {
       setLoading(false);
     }
@@ -37,7 +65,7 @@ export default function Login() {
       <div className="flex w-full max-w-3xl rounded-2xl overflow-hidden shadow-lg border border-gray-200">
 
         {/* Left Panel */}
-        <div className="hidden md:flex w-5/12 bg-gradient-to-b from-orange-500 to-orange-400 flex-col items-center justify-center p-10 text-white shrink-0">
+        <div className="hidden md:flex w-5/12 bg-linear-to-b from-orange-500 to-orange-400 flex-col items-center justify-center p-10 text-white shrink-0">
           <div className="mb-5 bg-white/20 rounded-full p-4">
             <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />

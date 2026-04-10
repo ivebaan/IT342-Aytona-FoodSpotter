@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Register from './pages/Register';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token');
@@ -23,6 +24,15 @@ export default function App() {
             </PrivateRoute>
           }
         />
+        <Route
+          path="/profile"
+          element={
+            <PrivateRoute>
+              <Profile />
+            </PrivateRoute>
+          }
+        />
+        
       </Routes>
     </BrowserRouter>
   );

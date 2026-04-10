@@ -55,6 +55,13 @@
 			<scope>runtime</scope>
 		</dependency>
 
+		<!-- Local dev database fallback -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+		</dependency>
+
 		<!-- Validation -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
