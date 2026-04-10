@@ -6,6 +6,8 @@ import edu.cit.aytona.foodspotter.entity.Stall;
 import edu.cit.aytona.foodspotter.entity.User;
 import edu.cit.aytona.foodspotter.repository.StallRepository;
 import edu.cit.aytona.foodspotter.repository.UserRepository;
+import edu.cit.aytona.foodspotter.service.filter.CuisineFilterStrategy;
+import edu.cit.aytona.foodspotter.service.filter.FilterStrategy;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -47,17 +49,20 @@ public class StallService {
 
     public java.util.List<StallDTO> getApprovedStalls() {
         return stallRepository.findAll().stream()
-                .filter(s -> "APPROVED".equalsIgnoreCase(s.getStatus()))
-                .map(this::toDTO)
-                .toList();
+            .filter(s -> "APPROVED".equalsIgnoreCase(s.getStatus()))
+            .map(this::toDTO)
+            .toList();
     }
 
     public java.util.List<StallDTO> filterByCuisine(String cuisine) {
-        return stallRepository.findAll().stream()
-                .filter(s -> "APPROVED".equalsIgnoreCase(s.getStatus()))
-                .filter(s -> cuisine == null || s.getCuisine().equalsIgnoreCase(cuisine))
-                .map(this::toDTO)
-                .toList();
+        java.util.List<Stall> approved = stallRepository.findAll().stream()
+            .filter(s -> "APPROVED".equalsIgnoreCase(s.getStatus()))
+            .toList();
+
+        FilterStrategy strategy = new CuisineFilterStrategy(cuisine);
+        return strategy.filter(approved).stream()
+            .map(this::toDTO)
+            .toList();
     }
 
     public java.util.List<StallDTO> getPendingStalls() {
