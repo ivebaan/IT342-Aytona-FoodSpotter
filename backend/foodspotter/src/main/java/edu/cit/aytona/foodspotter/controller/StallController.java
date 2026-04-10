@@ -33,7 +33,7 @@ public class StallController {
 
     @GetMapping
     public ResponseEntity<ApiResponse<List<StallDTO>>> getStalls() {
-        List<StallDTO> stalls = stallService.getApprovedStalls();
+        List<StallDTO> stalls = stallService.getAllStallsDTO();
         return ResponseEntity.ok(ApiResponse.ok(stalls));
     }
 

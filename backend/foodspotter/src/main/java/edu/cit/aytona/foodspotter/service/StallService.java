@@ -39,6 +39,12 @@ public class StallService {
         return toDTO(stall);
     }
 
+    public java.util.List<StallDTO> getAllStallsDTO() {
+        return stallRepository.findAll().stream()
+                .map(this::toDTO)
+                .toList();
+    }
+
     public java.util.List<StallDTO> getApprovedStalls() {
         return stallRepository.findAll().stream()
                 .filter(s -> "APPROVED".equalsIgnoreCase(s.getStatus()))
