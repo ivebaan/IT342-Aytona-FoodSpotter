@@ -12,7 +12,7 @@ export default function AppLayout({ title, subtitle, children, fullScreen = fals
       <AppSidebar />
 
       <div className="flex-1 flex flex-col md:max-h-screen">
-        <header className="sticky top-0 z-20 border-b border-gray-200 bg-white/90 backdrop-blur-sm flex-shrink-0">
+        <header className="sticky top-0 z-20 border-b border-gray-200 bg-white/90 backdrop-blur-sm shrink-0">
           <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <div className="h-9 w-9 rounded-full bg-orange-500 text-white flex items-center justify-center text-sm">

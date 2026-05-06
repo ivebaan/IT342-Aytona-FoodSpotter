@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { createStall, getStalls } from "../api/stalls";
+import { createStall, getStalls } from "../features/stalls/api/stalls";
 import { CUISINE_OPTIONS } from "../constants/cuisineOptions";
 import AppLayout from "../components/AppLayout";
 
