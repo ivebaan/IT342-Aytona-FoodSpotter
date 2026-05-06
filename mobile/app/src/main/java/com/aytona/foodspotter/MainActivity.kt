@@ -20,16 +20,30 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         val navView: BottomNavigationView = binding.navView
-
         val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
-            )
+                R.id.navigation_auth,
+                R.id.navigation_home,
+                R.id.navigation_explore,
+                R.id.navigation_favorites,
+                R.id.navigation_profile,
+                R.id.navigation_settings,
+                R.id.navigation_add_stall,
+            ),
         )
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+        binding.fabAddStall.setOnClickListener {
+            navController.navigate(R.id.navigation_add_stall)
+        }
+
+        navController.addOnDestinationChangedListener { _, destination, _ ->
+            val showShell = destination.id != R.id.navigation_auth
+            navView.visibility = if (showShell) android.view.View.VISIBLE else android.view.View.GONE
+            binding.fabAddStall.visibility = if (showShell) android.view.View.VISIBLE else android.view.View.GONE
+        }
     }
 }
