@@ -48,7 +48,7 @@ export const updateStall = async (token, id, payload) => {
 };
 
 export const getVendorStalls = async (token) => {
-  const { data } = await api.get("/stalls/mine", {
+  const { data } = await api.get("/stalls/me", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

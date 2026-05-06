@@ -38,7 +38,7 @@ public class StallController {
         return ResponseEntity.ok(ApiResponse.ok(stalls));
     }
 
-    @GetMapping("/mine")
+    @GetMapping({"/me", "/mine"})
     public ResponseEntity<ApiResponse<List<StallDTO>>> getMyStalls(@AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails) {
         String email = userDetails == null ? null : userDetails.getUsername();
         List<StallDTO> stalls = email == null ? java.util.List.of() : stallService.getStallsByOwnerEmail(email);
