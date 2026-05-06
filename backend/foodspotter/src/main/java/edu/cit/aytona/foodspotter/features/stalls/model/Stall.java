@@ -30,6 +30,13 @@ public class Stall {
     @Column(nullable = false)
     private String cuisine;
 
+    @Column(name = "image_url")
+    private String imageUrl;
+
+    @Lob
+    @Column(name = "menu_json")
+    private String menuJson;
+
     @Column(nullable = false)
     private Double latitude;
 

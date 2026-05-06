@@ -3,10 +3,21 @@ import Register from './pages/Register';
 import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
+import Favorites from './pages/Favorites';
+import Settings from './pages/Settings';
+import VendorStalls from './pages/VendorStalls';
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem('token');
   return token ? children : <Navigate to="/login" replace />;
+}
+
+function PrivateVendorRoute({ children }) {
+  const token = localStorage.getItem('token');
+  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  if (!token) return <Navigate to="/login" replace />;
+  if (user.role !== 'VENDOR' && user.role !== 'OWNER') return <Navigate to="/dashboard" replace />;
+  return children;
 }
 
 export default function App() {
@@ -32,7 +43,30 @@ export default function App() {
             </PrivateRoute>
           }
         />
-        
+        <Route
+          path="/favorites"
+          element={
+            <PrivateRoute>
+              <Favorites />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/settings"
+          element={
+            <PrivateRoute>
+              <Settings />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/vendor/stalls"
+          element={
+            <PrivateVendorRoute>
+              <VendorStalls />
+            </PrivateVendorRoute>
+          }
+        />
       </Routes>
     </BrowserRouter>
   );
