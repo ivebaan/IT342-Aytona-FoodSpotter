@@ -1,6 +1,11 @@
 <resources>
     <string name="app_name">FoodSpotter</string>
+    <string name="title_auth">Login</string>
     <string name="title_home">Home</string>
+    <string name="title_explore">Explore</string>
+    <string name="title_favorites">Favorites</string>
+    <string name="title_profile">Profile</string>
+    <string name="title_settings">Settings</string>
+    <string name="title_add_stall">Add Stall</string>
     <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
 </resources>
