@@ -1,6 +1,6 @@
 package edu.cit.aytona.foodspotter.security;
 
-import edu.cit.aytona.foodspotter.repository.UserRepository;
+import edu.cit.aytona.foodspotter.features.auth.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;

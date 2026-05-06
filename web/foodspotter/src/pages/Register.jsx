@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { register } from '../api/auth';
+import { register } from '../features/auth/api/auth';
 
 export default function Register() {
   const navigate = useNavigate();
