@@ -4,6 +4,7 @@ import edu.cit.aytona.foodspotter.dto.ApiResponse;
 import edu.cit.aytona.foodspotter.features.stalls.application.StallService;
 import edu.cit.aytona.foodspotter.features.stalls.dto.StallDTO;
 import edu.cit.aytona.foodspotter.features.stalls.dto.StallRequest;
+import edu.cit.aytona.foodspotter.features.stalls.dto.StallUpdateRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -37,9 +38,26 @@ public class StallController {
         return ResponseEntity.ok(ApiResponse.ok(stalls));
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/mine")
+    public ResponseEntity<ApiResponse<List<StallDTO>>> getMyStalls(@AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails) {
+        String email = userDetails == null ? null : userDetails.getUsername();
+        List<StallDTO> stalls = email == null ? java.util.List.of() : stallService.getStallsByOwnerEmail(email);
+        return ResponseEntity.ok(ApiResponse.ok(stalls));
+    }
+
+    @GetMapping("/{id:\\d+}")
     public ResponseEntity<ApiResponse<StallDTO>> getStall(@PathVariable Long id) {
         StallDTO stall = stallService.getStall(id);
+        return ResponseEntity.ok(ApiResponse.ok(stall));
+    }
+
+    @PutMapping("/{id:\\d+}")
+    public ResponseEntity<ApiResponse<StallDTO>> updateStall(
+            @AuthenticationPrincipal UserDetails userDetails,
+            @PathVariable Long id,
+            @RequestBody StallUpdateRequest request) {
+
+        StallDTO stall = stallService.updateStall(userDetails.getUsername(), id, request);
         return ResponseEntity.ok(ApiResponse.ok(stall));
     }
 

@@ -36,3 +36,22 @@ export const createStall = async (
 
   return data;
 };
+
+export const updateStall = async (token, id, payload) => {
+  const { data } = await api.put(`/stalls/${id}`, payload, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  return data;
+};
+
+export const getVendorStalls = async (token) => {
+  const { data } = await api.get("/stalls/mine", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return data;
+};

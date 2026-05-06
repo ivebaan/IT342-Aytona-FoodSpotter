@@ -6,9 +6,9 @@ const navItemBaseClass =
 const navItems = [
   { to: "/dashboard", label: "Home", icon: "home" },
   { to: "/profile", label: "Explore", icon: "explore" },
-  { to: "/profile", label: "Favorites", icon: "favorites" },
+  { to: "/favorites", label: "Favorites", icon: "favorites" },
   { to: "/profile", label: "Profile", icon: "profile" },
-  { to: "/profile", label: "Settings", icon: "settings" },
+  { to: "/settings", label: "Settings", icon: "settings" },
 ];
 
 function SidebarIcon({ name }) {
@@ -103,6 +103,7 @@ function SidebarIcon({ name }) {
 
 export default function AppSidebar() {
   const navigate = useNavigate();
+  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -170,6 +171,44 @@ export default function AppSidebar() {
               {item.label}
             </div>
           ),
+        )}
+
+        {/* Vendor Section */}
+        {(currentUser.role === "VENDOR" || currentUser.role === "OWNER") && (
+          <>
+            <div className="md:my-2 md:border-t border-orange-100" />
+            <div className="px-3 py-2 hidden md:block">
+              <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider">
+                Vendor
+              </p>
+            </div>
+            <NavLink
+              to="/vendor/stalls"
+              className={({ isActive }) =>
+                `${navItemBaseClass} ${
+                  isActive
+                    ? "bg-orange-500 text-white shadow-sm"
+                    : "text-orange-700 hover:bg-orange-100/60 hover:text-orange-800"
+                }`
+              }
+            >
+              <svg
+                viewBox="0 0 24 24"
+                className="h-4.5 w-4.5"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                <polyline points="9 22 9 12 15 12 15 22" />
+              </svg>
+              <span className="hidden md:inline">My Stalls</span>
+              <span className="md:hidden">Stalls</span>
+            </NavLink>
+          </>
         )}
       </nav>
 
