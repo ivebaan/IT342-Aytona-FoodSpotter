@@ -6,7 +6,7 @@ class SettingsStore(context: Context) {
     private val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     var approvedOnly: Boolean
-        get() = prefs.getBoolean(KEY_APPROVED_ONLY, true)
+        get() = prefs.getBoolean(KEY_APPROVED_ONLY, false)
         set(value) = prefs.edit().putBoolean(KEY_APPROVED_ONLY, value).apply()
 
     var autoCenterOnSelect: Boolean
