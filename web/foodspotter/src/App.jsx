@@ -1,22 +1,24 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import Register from './pages/Register';
-import Login from './pages/Login';
-import Dashboard from './pages/Dashboard';
-import Profile from './pages/Profile';
-import Favorites from './pages/Favorites';
-import Settings from './pages/Settings';
-import VendorStalls from './pages/VendorStalls';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import Register from "./pages/Register";
+import Login from "./pages/Login";
+import Dashboard from "./pages/Dashboard";
+import Profile from "./pages/Profile";
+import Favorites from "./pages/Favorites";
+import Settings from "./pages/Settings";
+import VendorStalls from "./pages/VendorStalls";
+import Explore from "./pages/Explore";
 
 function PrivateRoute({ children }) {
-  const token = localStorage.getItem('token');
+  const token = localStorage.getItem("token");
   return token ? children : <Navigate to="/login" replace />;
 }
 
 function PrivateVendorRoute({ children }) {
-  const token = localStorage.getItem('token');
-  const user = JSON.parse(localStorage.getItem('user') || '{}');
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
   if (!token) return <Navigate to="/login" replace />;
-  if (user.role !== 'VENDOR' && user.role !== 'OWNER') return <Navigate to="/dashboard" replace />;
+  if (user.role !== "VENDOR" && user.role !== "OWNER")
+    return <Navigate to="/dashboard" replace />;
   return children;
 }
 
@@ -48,6 +50,14 @@ export default function App() {
           element={
             <PrivateRoute>
               <Favorites />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/explore"
+          element={
+            <PrivateRoute>
+              <Explore />
             </PrivateRoute>
           }
         />

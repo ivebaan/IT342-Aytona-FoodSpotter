@@ -5,7 +5,7 @@ const navItemBaseClass =
 
 const navItems = [
   { to: "/dashboard", label: "Home", icon: "home" },
-  { to: "/profile", label: "Explore", icon: "explore" },
+  { to: "/explore", label: "Explore", icon: "explore" },
   { to: "/favorites", label: "Favorites", icon: "favorites" },
   { to: "/profile", label: "Profile", icon: "profile" },
   { to: "/settings", label: "Settings", icon: "settings" },
@@ -134,7 +134,9 @@ export default function AppSidebar() {
             </svg>
           </div>
           <div>
-            <p className="text-base font-bold tracking-tight text-black">FoodSpotter</p>
+            <p className="text-base font-bold tracking-tight text-black">
+              FoodSpotter
+            </p>
             {/* <p className="text-xs text-orange-500">Navigation</p> */}
           </div>
         </div>
