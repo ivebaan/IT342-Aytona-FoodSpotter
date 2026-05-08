@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.util.Log
+import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -30,6 +32,7 @@ class HomeFragment : Fragment() {
     private lateinit var repository: FoodSpotterRepository
     private var stalls: List<StallDto> = emptyList()
     private var selectedStall: StallDto? = null
+    private var mapExpanded: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentHomeBinding.inflate(inflater, container, false)
@@ -50,6 +53,10 @@ class HomeFragment : Fragment() {
         binding.homeGoToAuthButton.setOnClickListener { findNavController().navigate(R.id.navigation_auth) }
         binding.homeSelectedFavorite.setOnClickListener { toggleFavorite(selectedStall) }
 
+        binding.homeMapExpand.setOnClickListener {
+            toggleMapExpanded()
+        }
+
         loadStalls()
     }
 
@@ -57,19 +64,61 @@ class HomeFragment : Fragment() {
         lifecycleScope.launch {
             setBusy(true)
             try {
+                Log.d("HomeFragment", "Fetching stalls from backend...")
                 val response = repository.getStalls()
-                stalls = response.data.orEmpty().filterVisibleStalls()
+                Log.d("HomeFragment", "Response received: success=${response.success}, data=${response.data?.size}, error=${response.error?.message}")
+                
+                if (!response.success && response.error != null) {
+                    val errorMsg = "API Error: ${response.error.code} - ${response.error.message}"
+                    binding.homeStatus.text = errorMsg
+                    Log.e("HomeFragment", errorMsg)
+                    Toast.makeText(requireContext(), errorMsg, Toast.LENGTH_LONG).show()
+                    return@launch
+                }
+                
+                val rawStalls = response.data.orEmpty()
+                Log.d("HomeFragment", "Raw stalls count: ${rawStalls.size}")
+                rawStalls.forEachIndexed { idx, stall ->
+                    Log.d("HomeFragment", "Stall[$idx]: name=${stall.name}, lat=${stall.latitude}, lng=${stall.longitude}, status=${stall.status}")
+                }
+                
+                stalls = rawStalls.filterVisibleStalls()
+                Log.d("HomeFragment", "After filtering: ${stalls.size} visible stalls")
+                
                 if (selectedStall == null && stalls.isNotEmpty()) {
                     selectedStall = stalls.first()
                 }
-                binding.homeStatus.text = response.error?.message ?: "Loaded ${stalls.size} stalls from the backend."
+                binding.homeStatus.text = "Loaded ${stalls.size} stalls from the backend."
+                Log.d("HomeFragment", "Successfully loaded ${stalls.size} stalls")
                 renderScreen()
             } catch (error: Exception) {
-                binding.homeStatus.text = error.message ?: "Unable to load stalls."
+                val errorDetails = "${error.javaClass.simpleName}: ${error.message}"
+                binding.homeStatus.text = "Error: $errorDetails"
+                Log.e("HomeFragment", "Error loading stalls: $errorDetails", error)
+                Toast.makeText(requireContext(), errorDetails, Toast.LENGTH_LONG).show()
             } finally {
                 setBusy(false)
             }
         }
+    }
+
+    private fun toggleMapExpanded() {
+        mapExpanded = !mapExpanded
+        val params = binding.homeMapContainer.layoutParams
+        if (mapExpanded) {
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT
+            binding.homeStallsContainer.visibility = View.GONE
+            binding.homeEmptyState.visibility = View.GONE
+            binding.homeSelectedCard.visibility = View.GONE
+        } else {
+            val dp320 = (320 * resources.displayMetrics.density).toInt()
+            params.height = dp320
+            binding.homeStallsContainer.visibility = View.VISIBLE
+            binding.homeEmptyState.visibility = if (stalls.isEmpty()) View.VISIBLE else View.GONE
+            binding.homeSelectedCard.visibility = if (selectedStall != null) View.VISIBLE else View.GONE
+        }
+        binding.homeMapContainer.layoutParams = params
+        binding.homeMap.requestLayout()
     }
 
     private fun renderScreen() {
@@ -99,7 +148,6 @@ class HomeFragment : Fragment() {
     }
 
     private fun renderMap() {
-        binding.homeMap.overlays.clear()
         MapUtils.bindStallMarkers(binding.homeMap, stalls) { stall ->
             selectedStall = stall
             renderSelectedStall()
@@ -182,7 +230,7 @@ class HomeFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        binding.homeMap.onDetach()
+        binding.homeMap.onDestroy()
         super.onDestroyView()
         _binding = null
     }

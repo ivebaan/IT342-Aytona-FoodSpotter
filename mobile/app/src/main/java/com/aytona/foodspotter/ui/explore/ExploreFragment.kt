@@ -1,6 +1,7 @@
 package com.aytona.foodspotter.ui.explore
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,12 +65,25 @@ class ExploreFragment : Fragment() {
         lifecycleScope.launch {
             binding.exploreLoading.visibility = View.VISIBLE
             try {
+                Log.d("ExploreFragment", "Fetching stalls from backend...")
                 val response = repository.getStalls()
+                Log.d("ExploreFragment", "Response received: success=${response.success}, data=${response.data?.size}, error=${response.error?.message}")
+                
+                if (!response.success && response.error != null) {
+                    val errorMsg = "API Error: ${response.error.code} - ${response.error.message}"
+                    binding.exploreStatus.text = errorMsg
+                    Log.e("ExploreFragment", errorMsg)
+                    return@launch
+                }
+                
                 allStalls = response.data.orEmpty().filterVisibleStalls()
-                binding.exploreStatus.text = response.error?.message ?: "Showing ${allStalls.size} stalls from the backend."
+                binding.exploreStatus.text = "Showing ${allStalls.size} stalls from the backend."
+                Log.d("ExploreFragment", "Successfully loaded ${allStalls.size} stalls")
                 renderList()
             } catch (error: Exception) {
-                binding.exploreStatus.text = error.message ?: "Could not load stalls."
+                val errorDetails = "${error.javaClass.simpleName}: ${error.message}"
+                binding.exploreStatus.text = "Error: $errorDetails"
+                Log.e("ExploreFragment", "Error loading stalls: $errorDetails", error)
             } finally {
                 binding.exploreLoading.visibility = View.GONE
             }

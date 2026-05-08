@@ -34,21 +34,15 @@ class AuthFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         sessionManager = SessionManager(requireContext())
         repository = FoodSpotterRepository(ApiClient.service, sessionManager)
-        setupModeSwitch()
         setupActions()
-        showMode(isRegister = false)
-    }
-
-    private fun setupModeSwitch() {
-        binding.authToggle.addOnButtonCheckedListener { _, checkedId, isChecked ->
-            if (!isChecked) return@addOnButtonCheckedListener
-            showMode(isRegister = checkedId == binding.authRegisterTab.id)
-        }
+        showMode(isRegister = true)
     }
 
     private fun setupActions() {
         binding.loginButton.setOnClickListener { submitLogin() }
         binding.registerButton.setOnClickListener { submitRegister() }
+        binding.authLoginTab.setOnClickListener { showMode(isRegister = false) }
+        binding.authRegisterTab.setOnClickListener { showMode(isRegister = true) }
     }
 
     private fun submitLogin() {
@@ -83,8 +77,13 @@ class AuthFragment : Fragment() {
         val lastname = binding.registerLastname.editText?.text?.toString()?.trim().orEmpty()
         val email = binding.registerEmail.editText?.text?.toString()?.trim().orEmpty()
         val password = binding.registerPassword.editText?.text?.toString()?.trim().orEmpty()
+        val confirmPassword = binding.registerConfirmPassword.editText?.text?.toString()?.trim().orEmpty()
         if (firstname.isBlank() || lastname.isBlank() || email.isBlank() || password.length < 8) {
             showStatus("Fill out the registration form completely.", error = true)
+            return
+        }
+        if (password != confirmPassword) {
+            showStatus("Passwords do not match.", error = true)
             return
         }
 

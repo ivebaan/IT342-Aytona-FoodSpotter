@@ -4,6 +4,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.util.Log
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.aytona.foodspotter.data.FavoritesStore
 import com.aytona.foodspotter.data.SessionManager
@@ -17,6 +19,7 @@ class FavoritesFragment : Fragment() {
 
     private lateinit var favoritesStore: FavoritesStore
     private lateinit var sessionManager: SessionManager
+    private var mapExpanded: Boolean = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentFavoritesBinding.inflate(inflater, container, false)
@@ -33,6 +36,9 @@ class FavoritesFragment : Fragment() {
             favoritesStore.clear()
             renderFavorites()
         }
+        binding.favoritesMapExpand.setOnClickListener {
+            toggleMapExpanded()
+        }
         renderFavorites()
     }
 
@@ -41,7 +47,7 @@ class FavoritesFragment : Fragment() {
         binding.favoritesCount.text = favorites.size.toString()
         binding.favoritesContainer.removeAllViews()
         binding.favoritesEmptyState.visibility = if (favorites.isEmpty()) View.VISIBLE else View.GONE
-        binding.favoritesMap.overlays.clear()
+        // Do not clear all overlays (keeps tiles); MapUtils will manage markers
         favorites.forEach { stall ->
             binding.favoritesContainer.addView(
                 StallCardFactory.create(
@@ -68,6 +74,23 @@ class FavoritesFragment : Fragment() {
         }
     }
 
+    private fun toggleMapExpanded() {
+        mapExpanded = !mapExpanded
+        val params = binding.favoritesMapContainer.layoutParams
+        if (mapExpanded) {
+            params.height = ViewGroup.LayoutParams.MATCH_PARENT
+            binding.favoritesContainer.visibility = View.GONE
+            binding.favoritesEmptyState.visibility = View.GONE
+        } else {
+            val dp = (260 * resources.displayMetrics.density).toInt()
+            params.height = dp
+            binding.favoritesContainer.visibility = View.VISIBLE
+            binding.favoritesEmptyState.visibility = if (favoritesStore.getFavorites().isEmpty()) View.VISIBLE else View.GONE
+        }
+        binding.favoritesMapContainer.layoutParams = params
+        binding.favoritesMap.requestLayout()
+    }
+
     override fun onResume() {
         super.onResume()
         binding.favoritesMap.onResume()
@@ -79,7 +102,7 @@ class FavoritesFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        binding.favoritesMap.onDetach()
+        binding.favoritesMap.onDestroy()
         super.onDestroyView()
         _binding = null
     }
