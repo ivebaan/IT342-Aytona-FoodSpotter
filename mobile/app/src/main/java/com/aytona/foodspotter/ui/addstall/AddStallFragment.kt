@@ -1,6 +1,7 @@
 package com.aytona.foodspotter.ui.addstall
 
 import android.os.Bundle
+import android.view.MotionEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,13 +47,21 @@ class AddStallFragment : Fragment() {
 
         MapUtils.initialize(requireContext())
         MapUtils.prepareMap(binding.addStallMap)
+        binding.addStallMap.setOnTouchListener { view, event ->
+            view.parent?.requestDisallowInterceptTouchEvent(true)
+            if (event.action == MotionEvent.ACTION_UP) {
+                binding.addStallMessage.text = "Map position updated. Tap 'Use map center' to lock the location."
+            }
+            false
+        }
         binding.addStallCuisine.setAdapter(ArrayAdapter(requireContext(), android.R.layout.simple_list_item_1, CuisineOptions.values))
         binding.addStallPickLocationButton.setOnClickListener {
-            val center = binding.addStallMap.mapCenter
-            selectedLatitude = center.latitude
-            selectedLongitude = center.longitude
-            binding.addStallLocation.text = "Selected: ${String.format("%.5f", selectedLatitude)} , ${String.format("%.5f", selectedLongitude)}"
-            binding.addStallMessage.text = "Location captured from the current map center."
+            MapUtils.getCameraCenter { lat, lng ->
+                selectedLatitude = lat
+                selectedLongitude = lng
+                binding.addStallLocation.text = "Selected: ${String.format("%.5f", lat)} , ${String.format("%.5f", lng)}"
+                binding.addStallMessage.text = "Location captured from the current map center."
+            }
         }
 
         binding.addStallSubmit.setOnClickListener { submitStall() }
@@ -108,7 +117,7 @@ class AddStallFragment : Fragment() {
     }
 
     override fun onDestroyView() {
-        binding.addStallMap.onDetach()
+        binding.addStallMap.onDestroy()
         super.onDestroyView()
         _binding = null
     }

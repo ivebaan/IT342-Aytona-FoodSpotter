@@ -29,19 +29,11 @@
                 android:padding="22dp">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Add stall"
-                    android:textColor="#111827"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
-
-                <TextView
                     android:id="@+id/addStallMessage"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    android:text="Long-press the map to pick the exact location."
+                    android:text="Drag and zoom the map, then tap the button below to use the current center point."
                     android:textColor="#6B7280"
                     android:textSize="13sp" />
 
@@ -55,10 +47,10 @@
                     android:textSize="13sp"
                     android:textStyle="bold" />
 
-                <org.osmdroid.views.MapView
+                <com.google.android.gms.maps.MapView
                     android:id="@+id/addStallMap"
                     android:layout_width="match_parent"
-                    android:layout_height="240dp"
+                    android:layout_height="380dp"
                     android:layout_marginTop="16dp" />
 
                 <com.google.android.material.button.MaterialButton
