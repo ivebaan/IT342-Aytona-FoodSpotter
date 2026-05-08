@@ -13,7 +13,7 @@ interface FoodSpotterApiService {
     suspend fun register(@Body request: RegisterRequest): ApiResponse<AuthData>
 
     @GET("/stalls")
-    suspend fun getStalls(): ApiResponse<List<StallDto>>
+    suspend fun getStalls(@Header("Authorization") authorization: String? = null): ApiResponse<List<StallDto>>
 
     @GET("/stalls/me")
     suspend fun getMyStalls(@Header("Authorization") authorization: String): ApiResponse<List<StallDto>>

@@ -13,7 +13,10 @@ class FoodSpotterRepository(
         password: String,
     ) = service.register(RegisterRequest(firstname, lastname, email, password))
 
-    suspend fun getStalls() = service.getStalls()
+    suspend fun getStalls(): ApiResponse<List<StallDto>> {
+        val token = sessionManager.bearerToken()
+        return service.getStalls(token)
+    }
 
     suspend fun getMyStalls(): ApiResponse<List<StallDto>> {
         val token = sessionManager.bearerToken() ?: throw IllegalStateException("Please sign in first.")

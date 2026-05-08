@@ -13,83 +13,65 @@
         android:orientation="vertical"
         android:paddingBottom="120dp">
 
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="30dp"
-            app:cardElevation="0dp"
-            app:strokeColor="#F3DDC7"
-            app:strokeWidth="1dp"
-            android:backgroundTint="#FFFFFF">
+            android:orientation="vertical"
+            android:padding="12dp">
 
-            <LinearLayout
+            <TextView
+                android:id="@+id/exploreStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="20dp">
+                android:layout_marginTop="8dp"
+                android:textColor="#4B5563"
+                android:textSize="13sp" />
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Explore stalls"
-                    android:textColor="#111827"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:hint="Search">
 
-                <TextView
-                    android:id="@+id/exploreStatus"
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/exploreSearchInput"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:textColor="#4B5563"
-                    android:textSize="13sp" />
+                    android:inputType="text" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:hint="Cuisine filter"
+                app:endIconMode="dropdown_menu">
+
+                <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                    android:id="@+id/exploreCuisineField"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:hint="Search">
+                    android:inputType="none" />
+            </com.google.android.material.textfield.TextInputLayout>
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:id="@+id/exploreSearchInput"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="text" />
-                </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/exploreRefreshButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:text="Refresh"
+                android:textAllCaps="false"
+                app:cornerRadius="16dp"
+                app:backgroundTint="#EA580C" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:hint="Cuisine filter"
-                    app:endIconMode="dropdown_menu">
-
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/exploreCuisineField"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/exploreRefreshButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:text="Refresh"
-                    android:textAllCaps="false"
-                    app:cornerRadius="16dp"
-                    app:backgroundTint="#EA580C" />
-
-                <ProgressBar
-                    android:id="@+id/exploreLoading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:indeterminateTint="#EA580C"
-                    android:visibility="gone" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+            <ProgressBar
+                android:id="@+id/exploreLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:indeterminateTint="#EA580C"
+                android:visibility="gone" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/exploreEmptyState"
