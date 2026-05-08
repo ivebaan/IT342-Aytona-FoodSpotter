@@ -2,9 +2,15 @@ package edu.cit.aytona.foodspotter.features.stalls.dto;
 
 import edu.cit.aytona.foodspotter.features.stalls.validation.AllowedCuisine;
 import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class StallRequest {
 
     @NotBlank(message = "Stall name is required")
