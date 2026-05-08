@@ -1,10 +1,10 @@
-import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { login } from '../features/auth/api/auth';
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import { login } from "../features/auth/api/auth";
 
 export default function Login() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ email: '', password: '' });
+  const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -23,12 +23,12 @@ export default function Login() {
     const password = form.password;
 
     if (!email || !password) {
-      setError('Email and password are required.');
+      setError("Email and password are required.");
       return;
     }
 
     if (!isValidEmail(email)) {
-      setError('Please enter a valid email address.');
+      setError("Please enter a valid email address.");
       return;
     }
 
@@ -40,20 +40,20 @@ export default function Login() {
       const user = res?.data?.user;
 
       if (!accessToken || !user) {
-        throw new Error('Invalid login response from server.');
+        throw new Error("Invalid login response from server.");
       }
 
-      localStorage.setItem('token', accessToken);
-      localStorage.setItem('user', JSON.stringify(user));
+      localStorage.setItem("token", accessToken);
+      localStorage.setItem("user", JSON.stringify(user));
       setSuccess(true);
-      setTimeout(() => navigate('/dashboard'), 1500);
+      setTimeout(() => navigate("/dashboard"), 1500);
     } catch (err) {
       const errData = err.response?.data?.error;
       setError(
         errData?.details ||
           errData?.message ||
           err.message ||
-          'Login failed. Please try again.',
+          "Login failed. Please try again.",
       );
     } finally {
       setLoading(false);
@@ -61,58 +61,166 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen w-screen bg-gray-100 flex items-center justify-center p-10">
-      <div className="flex w-full max-w-3xl rounded-2xl overflow-hidden shadow-lg border border-gray-200">
+    <div className="relative min-h-screen w-full overflow-hidden bg-[radial-gradient(circle_at_top_left,_rgba(251,146,60,0.18),_transparent_38%),radial-gradient(circle_at_bottom_right,_rgba(14,165,233,0.16),_transparent_34%),linear-gradient(135deg,_#fffaf4_0%,_#ffffff_48%,_#f8fafc_100%)] px-4 py-8 sm:px-6 lg:px-10">
+      <div className="absolute left-[-6rem] top-[-5rem] h-72 w-72 rounded-full bg-orange-300/35 blur-3xl" />
+      <div className="absolute bottom-[-6rem] right-[-4rem] h-80 w-80 rounded-full bg-sky-300/25 blur-3xl" />
 
-        {/* Left Panel */}
-        <div className="hidden md:flex w-5/12 bg-linear-to-b from-orange-500 to-orange-400 flex-col items-center justify-center p-10 text-white shrink-0">
-          <div className="mb-5 bg-white/20 rounded-full p-4">
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
-            </svg>
-          </div>
-          <h1 className="text-2xl font-bold tracking-tight mb-3">FoodSpotter</h1>
-          <p className="text-orange-100 text-center text-sm leading-6">
-            Discover hidden food gems, local stalls, and authentic eateries near you — all in one place.
-          </p>
-        </div>
+      <div className="relative mx-auto flex min-h-[calc(100vh-4rem)] w-full max-w-6xl overflow-hidden rounded-[2rem] border border-white/70 bg-white/70 shadow-[0_30px_80px_rgba(15,23,42,0.12)] backdrop-blur-xl">
+        <div className="hidden lg:flex lg:w-[42%] flex-col justify-between bg-[linear-gradient(160deg,_#fb923c_0%,_#f97316_42%,_#ea580c_100%)] p-10 text-white">
+          <div className="space-y-8">
+            <div className="inline-flex items-center gap-3 rounded-full border border-white/20 bg-white/10 px-4 py-2 text-sm font-medium backdrop-blur-sm">
+              <span className="flex h-2 w-2 rounded-full bg-white" />
+              FoodSpotter
+            </div>
 
-        {/* Right Panel */}
-        <div className="flex flex-1 items-center justify-center bg-white">
-          <div className="w-full p-10">
-
-            {/* Mobile logo */}
-            <div className="flex md:hidden justify-center mb-8">
-              <div className="bg-orange-500 rounded-full p-3">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+            <div className="space-y-4">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-white/15 shadow-lg backdrop-blur-sm">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-8 w-8"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.7}
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.7}
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
                 </svg>
+              </div>
+
+              <div>
+                <p className="text-xs uppercase tracking-[0.3em] text-white/70">
+                  Explore local flavors
+                </p>
+                <h1 className="mt-3 max-w-sm text-4xl font-black leading-tight tracking-tight">
+                  Sign in and keep discovering food spots that feel local.
+                </h1>
+                <p className="mt-4 max-w-md text-sm leading-7 text-orange-50/90">
+                  FoodSpotter helps you track stalls, favorite restaurants, and
+                  hidden food gems around the city.
+                </p>
               </div>
             </div>
 
-            <h2 className="text-2xl font-semibold text-gray-800 mb-2">Welcome back</h2>
-            <p className="text-sm text-gray-400 mb-8">Sign in to continue to FoodSpotter.</p>
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
+                <p className="text-xs uppercase tracking-wide text-white/70">
+                  Fast access
+                </p>
+                <p className="mt-2 text-sm font-semibold">
+                  Return to your saved favorites instantly.
+                </p>
+              </div>
+              <div className="rounded-2xl border border-white/15 bg-white/10 p-4 backdrop-blur-sm">
+                <p className="text-xs uppercase tracking-wide text-white/70">
+                  Local picks
+                </p>
+                <p className="mt-2 text-sm font-semibold">
+                  Browse stalls and curated food spots nearby.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="space-y-3 border-t border-white/15 pt-6 text-sm text-orange-50/90">
+            <div className="flex items-center gap-3">
+              <span className="h-2 w-2 rounded-full bg-white/80" />
+              Curated for quick browsing
+            </div>
+            <div className="flex items-center gap-3">
+              <span className="h-2 w-2 rounded-full bg-white/80" />
+              Built for food explorers and vendors
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-1 items-center justify-center px-5 py-8 sm:px-8 lg:px-12">
+          <div className="w-full max-w-md">
+            <div className="mb-8 flex lg:hidden items-center gap-3">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-orange-500 text-white shadow-lg">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.7}
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.7}
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-semibold text-gray-900">
+                  FoodSpotter
+                </p>
+                <p className="text-xs text-gray-500">Sign in to continue</p>
+              </div>
+            </div>
+
+            <div className="mb-8 space-y-3">
+              <div className="inline-flex items-center gap-2 rounded-full border border-orange-100 bg-orange-50 px-3 py-1 text-xs font-semibold uppercase tracking-[0.2em] text-orange-700">
+                Welcome back
+              </div>
+              <div>
+                <h2 className="text-3xl font-black tracking-tight text-gray-900">
+                  Log in to your account
+                </h2>
+                <p className="mt-2 text-sm leading-6 text-gray-500">
+                  Continue exploring your saved food spots and recommendations.
+                </p>
+              </div>
+            </div>
 
             {success && (
-              <div className="mb-6 rounded-lg bg-green-50 border border-green-200 px-4 py-3 text-sm text-green-700 flex items-center gap-2">
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+              <div className="mb-6 flex items-center gap-2 rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 shadow-sm">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="h-4 w-4 shrink-0"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
                 </svg>
                 Login successful! Redirecting to your dashboard...
               </div>
             )}
 
             {error && (
-              <div className="mb-6 rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-sm text-red-600">
+              <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 shadow-sm">
                 {error}
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-2">Email Address</label>
+                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+                  Email Address
+                </label>
                 <input
                   type="email"
                   name="email"
@@ -120,12 +228,14 @@ export default function Login() {
                   onChange={handleChange}
                   placeholder="juan@email.com"
                   required
-                  className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-800 placeholder-gray-300 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
+                  className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-sm text-gray-800 placeholder-gray-300 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-gray-500 mb-2">Password</label>
+                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+                  Password
+                </label>
                 <input
                   type="password"
                   name="password"
@@ -133,22 +243,25 @@ export default function Login() {
                   onChange={handleChange}
                   placeholder="Enter your password"
                   required
-                  className="w-full rounded-lg border border-gray-200 px-4 py-3 text-sm text-gray-800 placeholder-gray-300 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 transition"
+                  className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-sm text-gray-800 placeholder-gray-300 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full rounded-lg bg-gray-900 hover:bg-gray-700 active:bg-gray-800 text-white font-semibold py-3 text-sm transition disabled:opacity-60 disabled:cursor-not-allowed"
+                className="group w-full rounded-2xl bg-[linear-gradient(135deg,_#ea580c_0%,_#fb923c_100%)] px-4 py-3.5 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(249,115,22,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_48px_rgba(249,115,22,0.34)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
               >
-                {loading ? 'Signing in...' : 'Sign In'}
+                {loading ? "Signing in..." : "Sign In"}
               </button>
             </form>
 
-            <p className="mt-8 text-center text-sm text-gray-400">
-              Don&apos;t have an account?{' '}
-              <Link to="/register" className="text-blue-500 font-medium hover:underline">
+            <p className="mt-8 text-center text-sm text-gray-500">
+              Don&apos;t have an account?{" "}
+              <Link
+                to="/register"
+                className="font-semibold text-orange-600 hover:text-orange-700 hover:underline"
+              >
                 Sign up
               </Link>
             </p>
