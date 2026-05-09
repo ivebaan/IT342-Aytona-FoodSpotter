@@ -1,7 +1,7 @@
 import { NavLink, useNavigate } from "react-router-dom";
 
 const navItemBaseClass =
-  "group inline-flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all duration-200";
+  "group inline-flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-300 ease-out";
 
 const navItems = [
   { to: "/dashboard", label: "Home", icon: "home" },
@@ -104,6 +104,7 @@ function SidebarIcon({ name }) {
 export default function AppSidebar() {
   const navigate = useNavigate();
   const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const isAdmin = currentUser.role === "ADMIN";
 
   const handleLogout = () => {
     localStorage.removeItem("token");
@@ -111,114 +112,158 @@ export default function AppSidebar() {
     navigate("/login");
   };
 
+      const displayName = [currentUser.firstname, currentUser.lastname]
+        .filter(Boolean)
+        .join(" ")
+        .trim();
+      const initials = `${currentUser.firstname?.[0] || "F"}${currentUser.lastname?.[0] || "S"}`;
+
   return (
-    <aside className="w-full md:w-72 md:min-h-screen border-r border-orange-100 bg-white backdrop-blur-sm flex flex-col">
-      <div className="px-6 py-6 border-b border-orange-100">
-        <div className="inline-flex items-center gap-3">
-          <div className="h-10 w-10 rounded-2xl bg-orange-500 text-white shadow-sm flex items-center justify-center">
-            <svg
-              viewBox="0 0 24 24"
-              className="h-5 w-5"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden="true"
-            >
-              <path d="M3 10h18" />
-              <path d="M5 10v3a7 7 0 0 0 14 0v-3" />
-              <path d="M9 14v2" />
-              <path d="M12 14v3" />
-              <path d="M15 14v2" />
-            </svg>
-          </div>
-          <div>
-            <p className="text-base font-bold tracking-tight text-black">
-              FoodSpotter
+    <aside className="app-sidebar relative flex w-full flex-col overflow-hidden border-r border-orange-100/70 bg-white/95 shadow-[18px_0_50px_rgba(15,23,42,0.05)] backdrop-blur-2xl md:min-h-screen md:w-80">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top_right,rgba(251,146,60,0.22),transparent_45%),linear-gradient(180deg,rgba(255,247,237,0.95),rgba(255,255,255,0))]" />
+
+      <div className="relative border-b border-orange-100/40 px-6 py-6">
+        <div className="flex items-start gap-3 rounded-2xl border border-white/50 bg-gradient-to-br from-white via-white/95 to-orange-50/40 p-5 shadow-[0_20px_45px_rgba(15,23,42,0.08)] backdrop-blur-xl transition-all duration-300 hover:shadow-[0_24px_48px_rgba(251,146,60,0.12)]">
+          <img
+            src="/image.png"
+            alt="FoodSpotter"
+            className="h-12 w-12 shrink-0 rounded-lg object-cover shadow-md shadow-orange-500/15 ring-1 ring-white/60"
+          />
+          <div className="min-w-0 flex-1">
+            <div className="flex items-center justify-between gap-3">
+              <p className="truncate text-base font-bold tracking-tight text-slate-950">
+                FoodSpotter
+              </p>
+              <span className="rounded-full bg-gradient-to-r from-orange-100 to-rose-100 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-orange-700 shadow-sm">
+                Live
+              </span>
+            </div>
+            <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
+              Discover & manage the best food spots
             </p>
-            {/* <p className="text-xs text-orange-500">Navigation</p> */}
           </div>
         </div>
       </div>
 
-      <nav className="p-4 flex flex-row md:flex-col gap-2 overflow-x-auto md:overflow-visible">
-        {navItems.map((item) =>
-          item.to ? (
-            <NavLink
-              key={item.label}
-              to={item.to}
-              className={({ isActive }) =>
-                `${navItemBaseClass} ${
-                  isActive
-                    ? "bg-orange-500 text-white shadow-sm"
-                    : "text-orange-700 hover:bg-orange-100/60 hover:text-orange-800"
-                }`
-              }
-            >
-              <span className="inline-flex items-center justify-center text-current">
-                <SidebarIcon name={item.icon} />
-              </span>
-              {item.label}
-            </NavLink>
-          ) : (
-            <div
-              key={item.label}
-              className={`${navItemBaseClass} text-orange-500/70 bg-orange-50/60 cursor-default`}
-              title="Coming soon"
-            >
-              <span className="inline-flex items-center justify-center text-current">
-                <SidebarIcon name={item.icon} />
-              </span>
-              {item.label}
-            </div>
-          ),
-        )}
+      <nav className="relative flex flex-row gap-2 overflow-x-auto px-4 py-4 md:flex-col md:overflow-visible md:px-6 md:py-6">
+        <div className="hidden px-1 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400 md:block">
+          Main Navigation
+        </div>
 
-        {/* Vendor Section */}
+        {navItems.map((item) => (
+          <NavLink
+            key={item.label}
+            to={item.to}
+            className={({ isActive }) =>
+              `${navItemBaseClass} border transition-all duration-300 ${
+                isActive
+                  ? "border-orange-300 bg-gradient-to-r from-orange-500 to-rose-500 text-white shadow-[0_12px_28px_rgba(249,115,22,0.25)] scale-105"
+                  : "border-transparent bg-white/60 text-slate-600 shadow-sm hover:border-orange-100/60 hover:bg-orange-50/90 hover:text-slate-900 hover:shadow-md hover:scale-[1.02]"
+              }`
+            }
+          >
+            <span className={`inline-flex items-center justify-center rounded-lg p-2.5 transition-all duration-300 ${item.to === "/dashboard" ? "bg-orange-100/70 text-orange-600" : "bg-orange-50 text-orange-500"}`}>
+              <SidebarIcon name={item.icon} />
+            </span>
+            <span className="flex-1 text-left font-medium">{item.label}</span>
+          </NavLink>
+        ))}
+
         {(currentUser.role === "VENDOR" || currentUser.role === "OWNER") && (
-          <>
-            <div className="md:my-2 md:border-t border-orange-100" />
-            <div className="px-3 py-2 hidden md:block">
-              <p className="text-xs font-semibold text-orange-400 uppercase tracking-wider">
-                Vendor
-              </p>
-            </div>
+          <div className="mt-3 rounded-xl border border-emerald-200/60 bg-gradient-to-br from-emerald-50/70 to-emerald-50/40 p-4 shadow-sm transition-all duration-300 md:mt-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-700">
+              Vendor Tools
+            </p>
             <NavLink
               to="/vendor/stalls"
               className={({ isActive }) =>
-                `${navItemBaseClass} ${
+                `${navItemBaseClass} mt-4 border transition-all duration-300 ${
                   isActive
-                    ? "bg-orange-500 text-white shadow-sm"
-                    : "text-orange-700 hover:bg-orange-100/60 hover:text-orange-800"
+                    ? "border-emerald-300 bg-emerald-600 text-white shadow-[0_12px_28px_rgba(16,185,129,0.25)] scale-105"
+                    : "border-emerald-200/70 bg-white text-emerald-800 shadow-sm hover:bg-emerald-100/80 hover:text-emerald-950 hover:shadow-md hover:scale-[1.02]"
                 }`
               }
             >
-              <svg
-                viewBox="0 0 24 24"
-                className="h-4.5 w-4.5"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                aria-hidden="true"
-              >
-                <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
-                <polyline points="9 22 9 12 15 12 15 22" />
-              </svg>
-              <span className="hidden md:inline">My Stalls</span>
-              <span className="md:hidden">Stalls</span>
+              <span className="inline-flex items-center justify-center rounded-lg p-2.5 transition-all duration-300 bg-emerald-100/60 text-emerald-600">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+                  <polyline points="9 22 9 12 15 12 15 22" />
+                </svg>
+              </span>
+              <span className="flex-1 text-left font-medium">My Stalls</span>
             </NavLink>
-          </>
+          </div>
+        )}
+
+        {isAdmin && (
+          <div className="mt-3 rounded-xl border border-indigo-200/60 bg-gradient-to-br from-indigo-50/70 to-indigo-50/40 p-4 shadow-sm transition-all duration-300 md:mt-4">
+            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700">
+              Admin Controls
+            </p>
+            <NavLink
+              to="/admin/panel"
+              className={({ isActive }) =>
+                `${navItemBaseClass} mt-4 border transition-all duration-300 ${
+                  isActive
+                    ? "border-indigo-300 bg-indigo-600 text-white shadow-[0_12px_28px_rgba(79,70,229,0.25)] scale-105"
+                    : "border-indigo-200/70 bg-white text-indigo-800 shadow-sm hover:bg-indigo-100/80 hover:text-indigo-950 hover:shadow-md hover:scale-[1.02]"
+                }`
+              }
+            >
+              <span className="inline-flex items-center justify-center rounded-lg p-2.5 transition-all duration-300 bg-indigo-100/60 text-indigo-600">
+                <svg
+                  viewBox="0 0 24 24"
+                  className="h-5 w-5"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden="true"
+                >
+                  <path d="M12 2 4 6v6c0 5 3.5 9.7 8 10 4.5-.3 8-5 8-10V6l-8-4z" />
+                  <path d="M9 12l2 2 4-4" />
+                </svg>
+              </span>
+              <span className="flex-1 text-left font-medium">Admin Panel</span>
+            </NavLink>
+          </div>
         )}
       </nav>
 
-      <div className="p-4 mt-auto">
+      <div className="relative mt-auto border-t border-orange-100/40 p-6">
+        <div className="mb-4 rounded-xl border border-slate-200/60 bg-gradient-to-br from-white to-slate-50/50 p-4 shadow-sm transition-all duration-300">
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
+            Session
+          </p>
+          <div className="mt-3 flex items-center gap-3">
+            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-rose-500 text-xs font-bold text-white shadow-md shadow-orange-500/20 ring-2 ring-white/20">
+              {initials.toUpperCase()}
+            </div>
+            <div className="min-w-0">
+              <p className="truncate text-sm font-semibold text-slate-950">
+                {displayName || "Your account"}
+              </p>
+              <p className="mt-0.5 truncate text-xs text-slate-500">
+                {currentUser.email || "Signed in"}
+              </p>
+            </div>
+          </div>
+        </div>
+
         <button
           type="button"
           onClick={handleLogout}
-          className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-orange-500 px-3 py-2.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-orange-600"
+          className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-4 py-3.5 text-sm font-semibold text-white shadow-[0_14px_32px_rgba(15,23,42,0.2)] transition-all duration-300 hover:shadow-[0_16px_36px_rgba(15,23,42,0.25)] hover:-translate-y-0.5 active:translate-y-0"
         >
           <svg
             viewBox="0 0 24 24"

@@ -81,6 +81,13 @@ public class StallController {
         return ResponseEntity.ok(ApiResponse.ok(stall));
     }
 
+    @PutMapping("/admin/stalls/{id}/clear-menu")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<ApiResponse<StallDTO>> clearMenu(@PathVariable Long id) {
+        StallDTO stall = stallService.clearMenu(id);
+        return ResponseEntity.ok(ApiResponse.ok(stall));
+    }
+
     @DeleteMapping("/admin/stalls/{id}")
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteStall(@PathVariable Long id) {

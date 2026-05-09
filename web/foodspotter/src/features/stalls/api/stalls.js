@@ -55,3 +55,47 @@ export const getVendorStalls = async (token) => {
   });
   return data;
 };
+
+export const getPendingStalls = async (token) => {
+  const { data } = await api.get("/stalls/admin/pending-stalls", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return data;
+};
+
+export const approveStall = async (token, id) => {
+  const { data } = await api.put(
+    `/stalls/admin/stalls/${id}/approve`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  return data;
+};
+
+export const clearStallMenu = async (token, id) => {
+  const { data } = await api.put(
+    `/stalls/admin/stalls/${id}/clear-menu`,
+    {},
+    {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    },
+  );
+  return data;
+};
+
+export const rejectStall = async (token, id) => {
+  const { data } = await api.delete(`/stalls/admin/stalls/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return data;
+};
