@@ -112,11 +112,11 @@ export default function AppSidebar() {
     navigate("/login");
   };
 
-      const displayName = [currentUser.firstname, currentUser.lastname]
-        .filter(Boolean)
-        .join(" ")
-        .trim();
-      const initials = `${currentUser.firstname?.[0] || "F"}${currentUser.lastname?.[0] || "S"}`;
+  const displayName = [currentUser.firstname, currentUser.lastname]
+    .filter(Boolean)
+    .join(" ")
+    .trim();
+  const initials = `${currentUser.firstname?.[0] || "F"}${currentUser.lastname?.[0] || "S"}`;
 
   return (
     <aside className="app-sidebar relative flex w-full flex-col overflow-hidden border-r border-orange-100/70 bg-white/95 shadow-[18px_0_50px_rgba(15,23,42,0.05)] backdrop-blur-2xl md:min-h-screen md:w-80">
@@ -125,9 +125,9 @@ export default function AppSidebar() {
       <div className="relative border-b border-orange-100/40 px-6 py-6">
         <div className="flex items-start gap-3 rounded-2xl border border-white/50 bg-gradient-to-br from-white via-white/95 to-orange-50/40 p-5 shadow-[0_20px_45px_rgba(15,23,42,0.08)] backdrop-blur-xl transition-all duration-300 hover:shadow-[0_24px_48px_rgba(251,146,60,0.12)]">
           <img
-            src="/image.png"
+            src="/logo.svg"
             alt="FoodSpotter"
-            className="h-12 w-12 shrink-0 rounded-lg object-cover shadow-md shadow-orange-500/15 ring-1 ring-white/60"
+            className="h-12 w-12 shrink-0 shadow-md shadow-orange-500/15 ring-1 ring-white/60"
           />
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-3">
@@ -162,7 +162,9 @@ export default function AppSidebar() {
               }`
             }
           >
-            <span className={`inline-flex items-center justify-center rounded-lg p-2.5 transition-all duration-300 ${item.to === "/dashboard" ? "bg-orange-100/70 text-orange-600" : "bg-orange-50 text-orange-500"}`}>
+            <span
+              className={`inline-flex items-center justify-center rounded-lg p-2.5 transition-all duration-300 ${item.to === "/dashboard" ? "bg-orange-100/70 text-orange-600" : "bg-orange-50 text-orange-500"}`}
+            >
               <SidebarIcon name={item.icon} />
             </span>
             <span className="flex-1 text-left font-medium">{item.label}</span>

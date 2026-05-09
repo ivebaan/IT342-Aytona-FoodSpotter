@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { register } from "../features/auth/api/auth";
+import { register } from "../api/auth";
+import RegisterForm from "../components/RegisterForm";
 
-export default function Register() {
+export default function RegisterPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({
     firstname: "",
@@ -233,76 +234,12 @@ export default function Register() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div className="flex gap-4">
-                <div className="flex-1">
-                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-                    First Name
-                  </label>
-                  <input
-                    type="text"
-                    name="firstname"
-                    value={form.firstname}
-                    onChange={handleChange}
-                    placeholder="Juan"
-                    required
-                    className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-sm text-gray-800 placeholder-gray-300 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
-                  />
-                </div>
-                <div className="flex-1">
-                  <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-                    Last Name
-                  </label>
-                  <input
-                    type="text"
-                    name="lastname"
-                    value={form.lastname}
-                    onChange={handleChange}
-                    placeholder="Dela Cruz"
-                    required
-                    className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-sm text-gray-800 placeholder-gray-300 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="juan@email.com"
-                  required
-                  className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-sm text-gray-800 placeholder-gray-300 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  value={form.password}
-                  onChange={handleChange}
-                  placeholder="Min. 8 characters"
-                  required
-                  className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-sm text-gray-800 placeholder-gray-300 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full rounded-2xl bg-[linear-gradient(135deg,_#ea580c_0%,_#f59e0b_100%)] px-4 py-3.5 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(249,115,22,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_48px_rgba(249,115,22,0.34)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {loading ? "Creating account..." : "Sign Up"}
-              </button>
-            </form>
+            <RegisterForm
+              form={form}
+              onChange={handleChange}
+              onSubmit={handleSubmit}
+              loading={loading}
+            />
 
             <p className="mt-8 text-center text-sm text-gray-500">
               Already have an account?{" "}
