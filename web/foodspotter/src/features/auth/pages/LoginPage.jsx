@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { login } from "../features/auth/api/auth";
+import { login } from "../api/auth";
+import LoginForm from "../components/LoginForm";
 
-export default function Login() {
+export default function LoginPage() {
   const navigate = useNavigate();
   const [form, setForm] = useState({ email: "", password: "" });
   const [error, setError] = useState(null);
@@ -216,45 +217,12 @@ export default function Login() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <div>
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-                  Email Address
-                </label>
-                <input
-                  type="email"
-                  name="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="juan@email.com"
-                  required
-                  className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-sm text-gray-800 placeholder-gray-300 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
-                />
-              </div>
-
-              <div>
-                <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
-                  Password
-                </label>
-                <input
-                  type="password"
-                  name="password"
-                  value={form.password}
-                  onChange={handleChange}
-                  placeholder="Enter your password"
-                  required
-                  className="w-full rounded-2xl border border-gray-200 bg-white px-4 py-3.5 text-sm text-gray-800 placeholder-gray-300 outline-none transition focus:border-orange-400 focus:ring-4 focus:ring-orange-100"
-                />
-              </div>
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="group w-full rounded-2xl bg-[linear-gradient(135deg,_#ea580c_0%,_#fb923c_100%)] px-4 py-3.5 text-sm font-semibold text-white shadow-[0_18px_40px_rgba(249,115,22,0.28)] transition hover:-translate-y-0.5 hover:shadow-[0_22px_48px_rgba(249,115,22,0.34)] active:translate-y-0 disabled:cursor-not-allowed disabled:opacity-60"
-              >
-                {loading ? "Signing in..." : "Sign In"}
-              </button>
-            </form>
+            <LoginForm
+              form={form}
+              onChange={handleChange}
+              onSubmit={handleSubmit}
+              loading={loading}
+            />
 
             <p className="mt-8 text-center text-sm text-gray-500">
               Don&apos;t have an account?{" "}

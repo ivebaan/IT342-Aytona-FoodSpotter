@@ -21,9 +21,9 @@ export default function AppLayout({
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
               <img
-                src="/image.png"
+                src="/logo.svg"
                 alt="FoodSpotter"
-                className="h-11 w-11 shrink-0 object-cover drop-shadow-sm"
+                className="h-11 w-11 shrink-0 drop-shadow-sm"
               />
               <div className="min-w-0">
                 <p className="truncate text-sm font-bold tracking-tight header-title sm:text-base">
