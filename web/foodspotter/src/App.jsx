@@ -7,6 +7,7 @@ import Favorites from "./pages/Favorites";
 import Settings from "./pages/Settings";
 import VendorStalls from "./pages/VendorStalls";
 import Explore from "./pages/Explore";
+import AdminPanel from "./pages/AdminPanel";
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("token");
@@ -19,6 +20,14 @@ function PrivateVendorRoute({ children }) {
   if (!token) return <Navigate to="/login" replace />;
   if (user.role !== "VENDOR" && user.role !== "OWNER")
     return <Navigate to="/dashboard" replace />;
+  return children;
+}
+
+function PrivateAdminRoute({ children }) {
+  const token = localStorage.getItem("token");
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  if (!token) return <Navigate to="/login" replace />;
+  if (user.role !== "ADMIN") return <Navigate to="/dashboard" replace />;
   return children;
 }
 
@@ -75,6 +84,14 @@ export default function App() {
             <PrivateVendorRoute>
               <VendorStalls />
             </PrivateVendorRoute>
+          }
+        />
+        <Route
+          path="/admin/panel"
+          element={
+            <PrivateAdminRoute>
+              <AdminPanel />
+            </PrivateAdminRoute>
           }
         />
       </Routes>

@@ -96,6 +96,13 @@ public class StallService {
         return toDTO(stallRepository.save(stall));
     }
 
+    public StallDTO clearMenu(Long id) {
+        Stall stall = stallRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Stall not found"));
+        stall.setMenuJson(null);
+        return toDTO(stallRepository.save(stall));
+    }
+
     public StallDTO updateStall(String userEmail, Long id, StallUpdateRequest request) {
         User user = userRepository.findByEmail(userEmail)
                 .orElseThrow(() -> new IllegalArgumentException("User not found"));

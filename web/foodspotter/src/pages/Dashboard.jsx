@@ -2,7 +2,11 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
-import { createStall, getStalls, updateStall } from "../features/stalls/api/stalls";
+import {
+  createStall,
+  getStalls,
+  updateStall,
+} from "../features/stalls/api/stalls";
 import {
   formatCurrency,
   getStallImage,
@@ -47,7 +51,12 @@ const formatMenuEditorText = (menuJson) => {
     return parsed
       .map((item) => {
         const price = item.price == null || item.price === "" ? "" : item.price;
-        return [item.name || "", price, item.description || "", item.imageUrl || ""]
+        return [
+          item.name || "",
+          price,
+          item.description || "",
+          item.imageUrl || "",
+        ]
           .map((part) => String(part).trim())
           .join(" | ")
           .replace(/\s+\|\s+\|/g, " | ")
@@ -111,10 +120,23 @@ export default function Dashboard() {
     configuredAttribution || "© OpenStreetMap contributors";
 
   const buildStallMarkerIcon = (stall, favorite = false) => {
+    const status = String(stall?.status || "PENDING").toUpperCase();
     const visual = getStallVisual(stall?.cuisine || stall?.type);
+    const statusColors = {
+      APPROVED: visual.color,
+      PENDING: "#f59e0b",
+      REJECTED: "#ef4444",
+    };
+    const statusEmoji = {
+      APPROVED: visual.emoji,
+      PENDING: "⌛",
+      REJECTED: "✕",
+    };
+    const fillColor = statusColors[status] || visual.color;
+    const emoji = statusEmoji[status] || visual.emoji;
     const ringColor = favorite ? "#be123c" : "#ffffff";
     const ringWidth = favorite ? 4 : 3;
-    const html = `<div style="width:44px;height:44px;border-radius:9999px;background:${visual.color};border:${ringWidth}px solid ${ringColor};box-shadow:0 10px 20px rgba(15,23,42,.30);display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;">${visual.emoji}</div>`;
+    const html = `<div style="width:44px;height:44px;border-radius:9999px;background:${fillColor};border:${ringWidth}px solid ${ringColor};box-shadow:0 10px 20px rgba(15,23,42,.30);display:flex;align-items:center;justify-content:center;font-size:22px;line-height:1;">${emoji}</div>`;
 
     return L.divIcon({
       className: "",
@@ -237,7 +259,9 @@ export default function Dashboard() {
     }
     const btn = document.getElementById(`fav-btn-${stall.id}`);
     if (btn) {
-      btn.textContent = isFavorite(stall.id) ? "Remove Favorite" : "Add Favorite";
+      btn.textContent = isFavorite(stall.id)
+        ? "Remove Favorite"
+        : "Add Favorite";
     }
     window.dispatchEvent(new Event("storage"));
   };
@@ -278,6 +302,8 @@ export default function Dashboard() {
     markersRef.current = [];
 
     stalls.forEach((stall) => {
+      if (String(stall?.status || "PENDING").toUpperCase() === "REJECTED")
+        return;
       if (stall.latitude == null || stall.longitude == null) return;
 
       const favorite = isFavorite(stall.id);
@@ -285,13 +311,18 @@ export default function Dashboard() {
         icon: buildStallMarkerIcon(stall, favorite),
       }).addTo(map);
 
-      const favLabel = isFavorite(stall.id) ? "Remove Favorite" : "Add Favorite";
+      const favLabel = isFavorite(stall.id)
+        ? "Remove Favorite"
+        : "Add Favorite";
       const popupHtml = `
         <div style="min-width:220px;max-width:260px;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;">
           <div style="padding:2px 0 4px;">
             <div style="font-size:15px;font-weight:700;color:#111827;line-height:1.2;">${stall.name}</div>
             <div style="margin-top:6px;display:inline-block;padding:4px 9px;border-radius:999px;background:#fff7ed;border:1px solid #fed7aa;color:#c2410c;font-size:11px;font-weight:600;">
               ${stall.cuisine || "Cuisine N/A"}
+            </div>
+            <div style="margin-top:6px;display:inline-block;padding:4px 9px;border-radius:999px;background:${String(stall.status || "PENDING").toUpperCase() === "APPROVED" ? "#ecfdf5" : "#fffbeb"};border:1px solid ${String(stall.status || "PENDING").toUpperCase() === "APPROVED" ? "#a7f3d0" : "#fcd34d"};color:${String(stall.status || "PENDING").toUpperCase() === "APPROVED" ? "#047857" : "#b45309"};font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;">
+              ${stall.status || "PENDING"}
             </div>
             <p style="margin:8px 0 0;color:#4b5563;font-size:12px;line-height:1.45;">
               ${stall.description || "No description provided."}
@@ -309,7 +340,10 @@ export default function Dashboard() {
         </div>
       `;
 
-      marker.bindPopup(popupHtml, { className: "foodspotter-popup", closeButton: true });
+      marker.bindPopup(popupHtml, {
+        className: "foodspotter-popup",
+        closeButton: true,
+      });
       markersRef.current.push(marker);
 
       marker.on("popupopen", () => {
@@ -342,7 +376,8 @@ export default function Dashboard() {
   const canEditSelectedStall =
     Boolean(selectedStall?.ownerEmail) &&
     Boolean(currentUser.email) &&
-    selectedStall.ownerEmail.toLowerCase() === currentUser.email.toLowerCase() &&
+    selectedStall.ownerEmail.toLowerCase() ===
+      currentUser.email.toLowerCase() &&
     (currentUser.role === "VENDOR" || currentUser.role === "OWNER");
 
   useEffect(() => {
@@ -364,14 +399,22 @@ export default function Dashboard() {
       description: selectedStall.description || "",
       cuisine: selectedStall.cuisine || "",
       imageUrl: selectedStall.imageUrl || "",
-      menuText: formatMenuEditorText(selectedStall.menuJson) ||
+      menuText:
+        formatMenuEditorText(selectedStall.menuJson) ||
         selectedStallMenu
-          .map((item) => [item.name || "", item.price ?? "", item.description || "", item.imageUrl || ""]
-            .map((part) => String(part).trim())
-            .join(" | ")
-            .replace(/\s+\|\s+\|/g, " | ")
-            .replace(/\|\s*$/g, "")
-            .trim())
+          .map((item) =>
+            [
+              item.name || "",
+              item.price ?? "",
+              item.description || "",
+              item.imageUrl || "",
+            ]
+              .map((part) => String(part).trim())
+              .join(" | ")
+              .replace(/\s+\|\s+\|/g, " | ")
+              .replace(/\|\s*$/g, "")
+              .trim(),
+          )
           .join("\n"),
     });
   }, [selectedStall, canEditSelectedStall]);
@@ -426,7 +469,9 @@ export default function Dashboard() {
 
       if (response && response.success && response.data) {
         setStalls((prev) =>
-          prev.map((stall) => (stall.id === response.data.id ? response.data : stall)),
+          prev.map((stall) =>
+            stall.id === response.data.id ? response.data : stall,
+          ),
         );
         setSelectedStall(response.data);
         setStallEditSuccess("Your stall was updated successfully.");
@@ -517,21 +562,35 @@ export default function Dashboard() {
 
   return (
     <AppLayout fullScreen={true}>
-      <div className="relative w-full h-full flex">
+      <div className="relative w-full h-full flex bg-slate-950">
+        <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.12),transparent_32%),radial-gradient(circle_at_bottom_right,rgba(255,133,77,0.12),transparent_28%)]" />
         {/* Map - Full screen */}
         <div className="flex-1 relative">
           <div
             ref={mapContainerRef}
-            className="w-full h-full rounded-none overflow-hidden"
+            className="w-full h-full rounded-none overflow-hidden brightness-[0.98] saturate-[1.04]"
           />
+          <div className="pointer-events-none absolute left-4 top-4 max-w-sm rounded-2xl border border-white/20 bg-slate-950/70 px-4 py-3 text-white shadow-2xl backdrop-blur-xl">
+            <p className="text-[11px] font-semibold uppercase tracking-[0.22em] text-orange-300">
+              Live dashboard
+            </p>
+            <h2 className="mt-1 text-sm font-semibold">
+              Food spots on the map
+            </h2>
+            <p className="mt-1 text-xs leading-5 text-slate-300">
+              Tap the map to place a stall, inspect submissions, and edit your
+              own listings.
+            </p>
+          </div>
           {mapLoadError && (
-            <div className="absolute bottom-4 left-4 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 text-xs text-amber-600 max-w-xs">
+            <div className="absolute bottom-4 left-4 max-w-xs rounded-xl border border-amber-200 bg-amber-50/95 px-3 py-2 text-xs text-amber-700 shadow-lg backdrop-blur">
               {mapLoadError}
             </div>
           )}
           {selectedLocation && (
-            <div className="absolute bottom-4 right-4 bg-white border border-gray-200 rounded-lg px-3 py-2 text-xs text-gray-600">
-              Selected: {selectedLocation.lat.toFixed(5)}, {selectedLocation.lng.toFixed(5)}
+            <div className="absolute bottom-4 right-4 rounded-xl border border-white/60 bg-white/90 px-3 py-2 text-xs text-gray-700 shadow-lg backdrop-blur">
+              Selected: {selectedLocation.lat.toFixed(5)},{" "}
+              {selectedLocation.lng.toFixed(5)}
             </div>
           )}
         </div>
@@ -539,13 +598,13 @@ export default function Dashboard() {
         {/* Right-side panels */}
         <div className="fixed left-4 right-4 md:left-auto md:right-4 md:w-[24rem] top-20 bottom-4 z-1200 flex flex-col gap-3 pointer-events-none">
           {selectedStall && (
-            <div className="pointer-events-auto overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-xl">
+            <div className="pointer-events-auto overflow-hidden rounded-[1.5rem] border border-white/60 bg-white/90 shadow-[0_24px_80px_rgba(15,23,42,0.18)] backdrop-blur-xl">
               <div className="relative">
                 <img
                   src={getStallImage(selectedStall)}
                   alt={selectedStall.name || "Stall"}
                   loading="lazy"
-                  className="h-40 w-full object-cover"
+                  className="h-44 w-full object-cover"
                   onError={(e) => {
                     e.currentTarget.src = getStallImage({
                       ...selectedStall,
@@ -557,31 +616,44 @@ export default function Dashboard() {
                 <button
                   type="button"
                   onClick={() => setSelectedStall(null)}
-                  className="absolute right-2 top-2 rounded-full bg-white/90 px-2 py-1 text-xs font-semibold text-gray-600 hover:bg-white"
+                  className="absolute right-3 top-3 rounded-full bg-white/95 px-3 py-1.5 text-xs font-semibold text-gray-700 shadow-md hover:bg-white"
                 >
                   Close
                 </button>
               </div>
 
-              <div className="max-h-[38vh] overflow-y-auto p-4">
+              <div className="max-h-[38vh] overflow-y-auto p-4 sm:p-5">
                 <div className="mb-2 flex items-center justify-between gap-2">
-                  <h3 className="text-base font-bold text-gray-800">{selectedStall.name}</h3>
-                  <span className="rounded-full border border-orange-200 bg-orange-50 px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-orange-700">
+                  <h3 className="text-lg font-bold text-slate-900">
+                    {selectedStall.name}
+                  </h3>
+                  <span className="rounded-full border border-orange-200 bg-gradient-to-r from-orange-50 to-rose-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-orange-700">
                     {getStallVisual(selectedStall.cuisine).label}
                   </span>
                 </div>
-                <p className="text-xs text-gray-600">{selectedStall.description || "No description provided."}</p>
+                <p className="text-sm leading-6 text-slate-600">
+                  {selectedStall.description || "No description provided."}
+                </p>
 
-                <div className="mt-3 rounded-xl border border-gray-100 bg-gray-50 p-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Cuisine / Category</p>
-                  <p className="mt-1 text-sm font-medium text-gray-700">{selectedStall.cuisine || "General"}</p>
+                <div className="mt-4 rounded-2xl border border-slate-100 bg-slate-50/90 p-3">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    Cuisine / Category
+                  </p>
+                  <p className="mt-1 text-sm font-medium text-slate-800">
+                    {selectedStall.cuisine || "General"}
+                  </p>
                 </div>
 
                 <div className="mt-3">
-                  <p className="text-[11px] font-semibold uppercase tracking-wide text-gray-500">Complete Menu</p>
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-500">
+                    Complete Menu
+                  </p>
                   <div className="mt-2 space-y-2">
                     {selectedStallMenu.map((item, idx) => (
-                      <div key={`${item.name}-${idx}`} className="overflow-hidden rounded-xl border border-gray-100 bg-white">
+                      <div
+                        key={`${item.name}-${idx}`}
+                        className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm"
+                      >
                         {item.imageUrl && (
                           <img
                             src={item.imageUrl}
@@ -593,13 +665,19 @@ export default function Dashboard() {
                             }}
                           />
                         )}
-                        <div className="px-3 py-2">
+                        <div className="px-3 py-2.5">
                           <div className="flex items-center justify-between gap-3">
-                            <p className="text-sm font-semibold text-gray-800">{item.name}</p>
-                            <p className="text-xs font-bold text-orange-600">{formatCurrency(item.price)}</p>
+                            <p className="text-sm font-semibold text-slate-900">
+                              {item.name}
+                            </p>
+                            <p className="text-xs font-bold text-orange-600">
+                              {formatCurrency(item.price)}
+                            </p>
                           </div>
                           {item.description && (
-                            <p className="mt-1 text-xs text-gray-500">{item.description}</p>
+                            <p className="mt-1 text-xs leading-5 text-slate-500">
+                              {item.description}
+                            </p>
                           )}
                         </div>
                       </div>
@@ -608,15 +686,18 @@ export default function Dashboard() {
                 </div>
 
                 {canEditSelectedStall && (
-                  <div className="mt-4 rounded-2xl border border-orange-100 bg-orange-50/60 p-4">
+                  <div className="mt-4 rounded-3xl border border-orange-100 bg-gradient-to-br from-orange-50/80 to-white p-4 shadow-inner">
                     <div className="mb-3 flex items-center justify-between gap-2">
                       <div>
-                        <p className="text-sm font-semibold text-orange-800">Edit your stall</p>
+                        <p className="text-sm font-semibold text-orange-900">
+                          Edit your stall
+                        </p>
                         <p className="text-[11px] text-orange-700/80">
-                          Only the creator of this stall can change these details.
+                          Only the creator of this stall can change these
+                          details.
                         </p>
                       </div>
-                      <span className="rounded-full bg-white px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-orange-700">
+                      <span className="rounded-full bg-white px-2 py-1 text-[10px] font-semibold uppercase tracking-wide text-orange-700 shadow-sm">
                         Owner only
                       </span>
                     </div>
@@ -633,31 +714,39 @@ export default function Dashboard() {
                       </div>
                     )}
 
-                    <form onSubmit={handleSaveStallCustomization} className="space-y-3">
+                    <form
+                      onSubmit={handleSaveStallCustomization}
+                      className="space-y-3"
+                    >
                       <div className="space-y-1">
-                        <label className="block text-xs font-medium text-orange-900/80">Stall picture URL</label>
+                        <label className="block text-xs font-medium text-orange-900/80">
+                          Stall picture URL
+                        </label>
                         <input
                           type="url"
                           name="imageUrl"
                           value={stallEditForm.imageUrl}
                           onChange={handleStallEditChange}
                           placeholder="https://..."
-                          className="w-full rounded-lg border border-orange-200 bg-white px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
+                          className="w-full rounded-xl border border-orange-200 bg-white px-3 py-2 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                         />
                       </div>
 
                       <div className="space-y-1">
-                        <label className="block text-xs font-medium text-orange-900/80">Menu items</label>
+                        <label className="block text-xs font-medium text-orange-900/80">
+                          Menu items
+                        </label>
                         <textarea
                           name="menuText"
                           rows={5}
                           value={stallEditForm.menuText}
                           onChange={handleStallEditChange}
                           placeholder="Name | Price | Description | Image URL (optional)\nExample: Silog Special | 95 | With egg and rice | https://..."
-                          className="w-full rounded-lg border border-orange-200 bg-white px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-orange-400"
+                          className="w-full rounded-xl border border-orange-200 bg-white px-3 py-2 text-sm resize-none shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400"
                         />
                         <p className="text-[11px] text-orange-700/70">
-                          One item per line. Separate fields using <span className="font-semibold">|</span>.
+                          One item per line. Separate fields using{" "}
+                          <span className="font-semibold">|</span>.
                         </p>
                       </div>
 
@@ -665,7 +754,7 @@ export default function Dashboard() {
                         <button
                           type="submit"
                           disabled={stallSaving}
-                          className="inline-flex flex-1 items-center justify-center rounded-lg bg-orange-600 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-orange-700 disabled:cursor-not-allowed disabled:opacity-60"
+                          className="inline-flex flex-1 items-center justify-center rounded-xl bg-gradient-to-r from-orange-500 to-rose-500 px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
                         >
                           {stallSaving ? "Saving..." : "Save stall details"}
                         </button>
@@ -677,13 +766,13 @@ export default function Dashboard() {
             </div>
           )}
 
-          <div className="pointer-events-auto overflow-hidden rounded-2xl border border-gray-100 bg-white shadow-lg">
-            <div className="flex items-center justify-between gap-3 border-b border-gray-100 px-4 py-3">
+          <div className="pointer-events-auto overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/90 shadow-[0_24px_80px_rgba(15,23,42,0.16)] backdrop-blur-xl">
+            <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3.5 bg-gradient-to-r from-white to-slate-50/60">
               <div>
-                <h3 className="text-sm font-semibold text-gray-800">
+                <h3 className="text-sm font-semibold text-slate-900">
                   {showVendorForm ? "Vendor Onboarding" : "Vendor Setup"}
                 </h3>
-                <p className="text-[11px] text-gray-500">
+                <p className="text-[11px] text-slate-500">
                   {isVendorPanelCollapsed
                     ? "Tap the arrow to expand"
                     : "Provide stall details to register your business"}
@@ -693,8 +782,10 @@ export default function Dashboard() {
               <button
                 type="button"
                 onClick={() => setIsVendorPanelCollapsed((prev) => !prev)}
-                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-600 shadow-sm transition hover:bg-gray-50 hover:text-gray-900"
-                aria-label={isVendorPanelCollapsed ? "Expand panel" : "Collapse panel"}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-sm transition hover:bg-slate-50 hover:text-slate-900"
+                aria-label={
+                  isVendorPanelCollapsed ? "Expand panel" : "Collapse panel"
+                }
                 title={isVendorPanelCollapsed ? "Expand" : "Collapse"}
               >
                 <svg
@@ -718,20 +809,20 @@ export default function Dashboard() {
               <div className="max-h-[calc(100vh-13rem)] overflow-y-auto p-6 space-y-6">
                 {!showVendorForm && (
                   <div className="space-y-4">
-                    <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
-                      <h3 className="text-sm font-semibold text-gray-700">
+                    <div className="rounded-2xl border border-slate-100 bg-slate-50/80 p-4">
+                      <h3 className="text-sm font-semibold text-slate-800">
                         Become a Vendor
                       </h3>
-                      <p className="mt-1 text-xs text-gray-500">
-                        You are currently a regular user. Choose an action to start your
-                        vendor onboarding.
+                      <p className="mt-1 text-xs leading-5 text-slate-500">
+                        You are currently a regular user. Choose an action to
+                        start your vendor onboarding.
                       </p>
                     </div>
 
                     <button
                       type="button"
                       onClick={() => setShowVendorForm(true)}
-                      className="w-full rounded-lg bg-orange-500 px-3 py-2 text-sm font-semibold text-white hover:bg-orange-600"
+                      className="w-full rounded-xl bg-gradient-to-r from-orange-500 to-rose-500 px-3 py-2.5 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 transition-transform hover:-translate-y-0.5"
                     >
                       Add Your Stall
                     </button>
@@ -739,39 +830,39 @@ export default function Dashboard() {
                     <button
                       type="button"
                       onClick={() => setShowVendorForm(true)}
-                      className="w-full rounded-lg border border-orange-200 bg-orange-50 px-3 py-2 text-sm font-semibold text-orange-700 hover:bg-orange-100"
+                      className="w-full rounded-xl border border-orange-200 bg-orange-50 px-3 py-2.5 text-sm font-semibold text-orange-700 shadow-sm hover:bg-orange-100"
                     >
                       Register Your Business
                     </button>
 
-                    <p className="text-xs text-gray-400">
-                      After submitting stall details, your role will automatically
-                      update to VENDOR.
+                    <p className="text-xs leading-5 text-slate-400">
+                      After submitting stall details, your role will
+                      automatically update to VENDOR.
                     </p>
                   </div>
                 )}
 
                 {showVendorForm && (
                   <div>
-                    <p className="text-xs text-gray-500 mb-3">
-                      Provide your stall name, location, and stall type to register
-                      your business.
+                    <p className="mb-3 text-xs leading-5 text-slate-500">
+                      Provide your stall name, location, and stall type to
+                      register your business.
                     </p>
                     <form onSubmit={handleCreateStall} className="space-y-3">
                       {formSuccess && (
-                        <div className="rounded-lg border border-green-200 bg-green-50 px-3 py-2 text-xs text-green-700">
+                        <div className="rounded-xl border border-green-200 bg-green-50 px-3 py-2 text-xs text-green-700 shadow-sm">
                           {formSuccess}
                         </div>
                       )}
 
                       {formError && (
-                        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700">
+                        <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-700 shadow-sm">
                           {formError}
                         </div>
                       )}
 
                       <div className="space-y-1">
-                        <label className="block text-xs font-medium text-gray-500">
+                        <label className="block text-xs font-medium text-slate-500">
                           Stall name
                         </label>
                         <input
@@ -781,12 +872,12 @@ export default function Dashboard() {
                           onChange={handleFormChange}
                           minLength={3}
                           required
-                          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
                           placeholder="e.g. Juan's Tapsilog"
                         />
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-xs font-medium text-gray-500">
+                        <label className="block text-xs font-medium text-slate-500">
                           Cuisine
                         </label>
                         <select
@@ -794,7 +885,7 @@ export default function Dashboard() {
                           value={form.cuisine}
                           onChange={handleFormChange}
                           required
-                          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
                         >
                           <option value="">Select cuisine type</option>
                           {CUISINE_OPTIONS.map((option) => (
@@ -805,7 +896,7 @@ export default function Dashboard() {
                         </select>
                       </div>
                       <div className="space-y-1">
-                        <label className="block text-xs font-medium text-gray-500">
+                        <label className="block text-xs font-medium text-slate-500">
                           Description
                         </label>
                         <textarea
@@ -815,21 +906,22 @@ export default function Dashboard() {
                           onChange={handleFormChange}
                           minLength={10}
                           required
-                          className="w-full rounded-lg border border-gray-200 px-3 py-2 text-sm resize-none focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm resize-none shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
                           placeholder="Short description of the stall"
                         />
                       </div>
                       <button
                         type="submit"
                         disabled={submitting}
-                        className="w-full inline-flex items-center justify-center rounded-lg bg-orange-500 px-3 py-2 text-xs font-semibold text-white shadow-sm hover:bg-orange-800 disabled:opacity-60 disabled:cursor-not-allowed"
+                        className="w-full inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-orange-500 to-rose-500 px-3 py-2.5 text-xs font-semibold text-white shadow-lg shadow-orange-500/20 transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         {submitting
                           ? "Submitting..."
                           : "Submit stall (uses selected pin)"}
                       </button>
                       <p className="text-[11px] text-gray-400">
-                        Tip: Click on the map to choose the exact location first.
+                        Tip: Click on the map to choose the exact location
+                        first.
                       </p>
                     </form>
 
