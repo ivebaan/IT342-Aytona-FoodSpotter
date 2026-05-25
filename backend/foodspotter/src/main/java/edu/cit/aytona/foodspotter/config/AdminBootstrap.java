@@ -15,7 +15,7 @@ public class AdminBootstrap implements CommandLineRunner {
 
     private final UserRepository userRepository;
 
-    @Value("${app.bootstrap.admin-email:admin@gmail.com}")
+    @Value("${app.bootstrap.admin-email:}")
     private String adminEmail;
 
     public AdminBootstrap(UserRepository userRepository) {
@@ -25,6 +25,11 @@ public class AdminBootstrap implements CommandLineRunner {
     @Override
     public void run(String... args) {
         try {
+            if (adminEmail == null || adminEmail.isBlank()) {
+                log.info("AdminBootstrap skipped: app.bootstrap.admin-email is not configured");
+                return;
+            }
+
             userRepository.findByEmail(adminEmail).ifPresent(user -> {
                 if (user.getRole() != User.Role.ADMIN) {
                     user.setRole(User.Role.ADMIN);
