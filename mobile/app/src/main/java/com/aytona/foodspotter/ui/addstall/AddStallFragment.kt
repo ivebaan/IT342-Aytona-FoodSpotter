@@ -70,11 +70,12 @@ class AddStallFragment : Fragment() {
     private fun submitStall() {
         val name = binding.addStallName.editText?.text?.toString()?.trim().orEmpty()
         val description = binding.addStallDescription.editText?.text?.toString()?.trim().orEmpty()
+        val imageUrl = binding.addStallImageUrl.editText?.text?.toString()?.trim().orEmpty()
         val cuisine = binding.addStallCuisine.text?.toString()?.trim().orEmpty()
         val latitude = selectedLatitude
         val longitude = selectedLongitude
 
-        if (name.length < 3 || description.length < 10 || cuisine.isBlank() || latitude == null || longitude == null) {
+        if (name.length < 3 || description.length < 10 || cuisine.isBlank() || imageUrl.isBlank() || latitude == null || longitude == null) {
             binding.addStallMessage.text = "Fill out the form and pick a point on the map."
             return
         }
@@ -87,12 +88,12 @@ class AddStallFragment : Fragment() {
                         name = name,
                         description = description,
                         cuisine = cuisine,
+                        imageUrl = imageUrl,
                         latitude = latitude.toString(),
                         longitude = longitude.toString(),
                     ),
                 )
                 if (response.success) {
-                    sessionManager.updateRole("VENDOR")
                     binding.addStallMessage.text = "Stall submitted for approval."
                     findNavController().navigate(R.id.navigation_home)
                 } else {

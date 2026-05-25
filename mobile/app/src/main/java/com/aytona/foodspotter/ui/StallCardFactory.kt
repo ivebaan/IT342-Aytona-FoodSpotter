@@ -5,6 +5,7 @@ import android.content.res.ColorStateList
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import coil.load
 import com.aytona.foodspotter.data.StallDto
 import com.aytona.foodspotter.databinding.ItemStallCardBinding
 
@@ -20,6 +21,14 @@ object StallCardFactory {
         val binding = ItemStallCardBinding.inflate(LayoutInflater.from(context), parent, false)
         val visual = CuisineOptions.visualFor(stall.cuisine)
         val accent = CuisineOptions.parseColor(visual.colorHex)
+        val imageUrl = stall.imageUrl?.trim().orEmpty()
+
+        binding.stallImage.visibility = if (imageUrl.isBlank()) View.GONE else View.VISIBLE
+        if (imageUrl.isNotBlank()) {
+            binding.stallImage.load(imageUrl) {
+                crossfade(true)
+            }
+        }
 
         binding.stallAccent.text = visual.emoji
         binding.stallAccent.backgroundTintList = ColorStateList.valueOf(accent)

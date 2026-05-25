@@ -34,13 +34,19 @@ class ProfileFragment : Fragment() {
         sessionManager = SessionManager(requireContext())
         repository = FoodSpotterRepository(ApiClient.service, sessionManager)
 
-        binding.profileSettingsButton.setOnClickListener { findNavController().navigate(R.id.navigation_settings) }
+        binding.profileSettingsButton.setOnClickListener { navigateSafely(R.id.navigation_settings) }
         binding.profileLogoutButton.setOnClickListener {
             sessionManager.clear()
-            findNavController().navigate(R.id.navigation_auth)
+            navigateSafely(R.id.navigation_auth)
         }
         renderProfile()
         loadMyStalls()
+    }
+
+    private fun navigateSafely(destinationId: Int) {
+        val navController = findNavController()
+        if (navController.currentDestination?.id == destinationId) return
+        runCatching { navController.navigate(destinationId) }
     }
 
     private fun renderProfile() {

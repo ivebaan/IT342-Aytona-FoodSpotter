@@ -12,6 +12,7 @@ import com.aytona.foodspotter.data.SessionManager
 import com.aytona.foodspotter.databinding.FragmentFavoritesBinding
 import com.aytona.foodspotter.ui.MapUtils
 import com.aytona.foodspotter.ui.StallCardFactory
+import com.aytona.foodspotter.ui.stalls.StallDetailsDialogFragment
 
 class FavoritesFragment : Fragment() {
     private var _binding: FragmentFavoritesBinding? = null
@@ -59,6 +60,7 @@ class FavoritesFragment : Fragment() {
                         if (stall.latitude != null && stall.longitude != null) {
                             MapUtils.centerOn(binding.favoritesMap, stall.latitude, stall.longitude)
                         }
+                        StallDetailsDialogFragment.show(parentFragmentManager, stall)
                     },
                     onFavoriteToggle = {
                         favoritesStore.remove(stall.id)

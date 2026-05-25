@@ -43,6 +43,8 @@ data class StallDto(
     val description: String? = null,
     val cuisine: String? = null,
     val imageUrl: String? = null,
+    val imageSizeBytes: Long? = null,
+    val address: String? = null,
     val menuJson: String? = null,
     val latitude: Double? = null,
     val longitude: Double? = null,
@@ -54,6 +56,8 @@ data class StallRequest(
     val name: String,
     val description: String,
     val cuisine: String,
+    val imageUrl: String,
+    val address: String? = null,
     val latitude: String,
     val longitude: String,
 )
