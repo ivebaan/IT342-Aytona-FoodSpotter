@@ -1,12 +1,14 @@
 import AppLayout from "../components/AppLayout";
+import { useAuth } from "../features/auth/hooks/useAuth";
 
 export default function Profile() {
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const { user } = useAuth();
+  const profileUser = user || {};
   const fullName =
-    [user.firstname, user.lastname].filter(Boolean).join(" ") ||
+    [profileUser.firstname, profileUser.lastname].filter(Boolean).join(" ") ||
     "FoodSpotter User";
   const initials =
-    `${user.firstname?.[0] || "F"}${user.lastname?.[0] || "S"}`.toUpperCase();
+    `${profileUser.firstname?.[0] || "F"}${profileUser.lastname?.[0] || "S"}`.toUpperCase();
 
   return (
     <AppLayout title="Profile" subtitle="Your account details and app activity">
@@ -25,7 +27,7 @@ export default function Profile() {
                   {fullName}
                 </h2>
                 <p className="mt-1 text-sm text-white/85">
-                  {user.email || "No email available"}
+                  {profileUser.email || "No email available"}
                 </p>
               </div>
             </div>
@@ -36,7 +38,7 @@ export default function Profile() {
                   Role
                 </p>
                 <p className="mt-1 text-sm font-semibold">
-                  {user.role || "USER"}
+                  {profileUser.role || "USER"}
                 </p>
               </div>
               <div className="rounded-2xl border border-white/15 bg-white/10 px-4 py-3 backdrop-blur-sm">
@@ -77,7 +79,7 @@ export default function Profile() {
                   First Name
                 </p>
                 <p className="mt-2 text-sm font-semibold text-gray-900">
-                  {user.firstname || "-"}
+                  {profileUser.firstname || "-"}
                 </p>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4">
@@ -85,7 +87,7 @@ export default function Profile() {
                   Last Name
                 </p>
                 <p className="mt-2 text-sm font-semibold text-gray-900">
-                  {user.lastname || "-"}
+                  {profileUser.lastname || "-"}
                 </p>
               </div>
               <div className="rounded-2xl border border-gray-100 bg-gray-50 p-4 sm:col-span-2">
@@ -93,7 +95,7 @@ export default function Profile() {
                   Email Address
                 </p>
                 <p className="mt-2 text-sm font-semibold text-gray-900">
-                  {user.email || "-"}
+                  {profileUser.email || "-"}
                 </p>
               </div>
             </div>
@@ -126,15 +128,15 @@ export default function Profile() {
                 Account Role
               </h3>
               <p className="mt-2 text-sm text-gray-500">
-                {user.role === "OWNER"
+                {profileUser.role === "OWNER"
                   ? "You have full management access across the platform."
-                  : user.role === "VENDOR"
+                  : profileUser.role === "VENDOR"
                     ? "You can manage your stall listings and updates."
                     : "You can explore food spots and save your favorites."}
               </p>
 
               <div className="mt-4 inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-gray-700">
-                {user.role || "USER"}
+                {profileUser.role || "USER"}
               </div>
             </div>
           </div>

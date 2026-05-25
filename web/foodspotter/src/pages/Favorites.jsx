@@ -2,30 +2,23 @@ import { useEffect, useRef, useState } from "react";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import AppLayout from "../components/AppLayout";
-import { getStallVisual } from "../features/stalls/utils/stallPresentation";
+import { getStallImage, getStallVisual } from "../features/stalls/utils/stallPresentation";
+import { useAuth } from "../features/auth/hooks/useAuth";
+import { clearFavoritesForUser, readFavorites, removeFavorite as removeFavoriteFromStore } from "../features/favorites/favoritesStorage";
 
 const defaultIconHtml = (emoji = "🍜", color = "#f97316") =>
   `<div style="width:36px;height:36px;border-radius:9999px;background:${color};border:3px solid #be123c;box-shadow:0 8px 16px rgba(15,23,42,.18);display:flex;align-items:center;justify-content:center;font-size:18px;line-height:1;">${emoji}</div>`;
 
 export default function Favorites() {
+  const { user } = useAuth();
+  const currentEmail = user?.email || "";
   const mapRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef([]);
   const [favorites, setFavorites] = useState([]);
 
-  const FAVORITES_KEY = "favorites";
-
-  const getFavorites = () => {
-    try {
-      return JSON.parse(localStorage.getItem(FAVORITES_KEY) || "[]");
-    } catch (e) {
-      return [];
-    }
-  };
-
   const removeFavorite = (id) => {
-    const arr = getFavorites().filter((f) => f.id !== id);
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(arr));
+    const arr = removeFavoriteFromStore(currentEmail, id);
     setFavorites(arr);
     // remove marker
     markersRef.current.forEach((m) => {
@@ -36,8 +29,8 @@ export default function Favorites() {
   };
 
   useEffect(() => {
-    setFavorites(getFavorites());
-  }, []);
+    setFavorites(readFavorites(currentEmail));
+  }, [currentEmail]);
 
   useEffect(() => {
     if (!mapRef.current || mapInstanceRef.current) return;
@@ -71,6 +64,9 @@ export default function Favorites() {
       const m = L.marker([lat, lng], { icon }).addTo(map);
       const popupHtml = `
         <div style="min-width:210px;max-width:250px;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;">
+          <div style="overflow:hidden;border-radius:14px;border:1px solid #e5e7eb;background:#f9fafb;margin-bottom:10px;">
+            <img src="${getStallImage(f)}" alt="${f.name || "Favorite stall"}" style="display:block;width:100%;height:118px;object-fit:cover;" />
+          </div>
           <div style="font-size:15px;font-weight:700;color:#111827;line-height:1.2;">${f.name}</div>
           <div style="margin-top:6px;display:inline-block;padding:4px 9px;border-radius:999px;background:#fff7ed;border:1px solid #fed7aa;color:#c2410c;font-size:11px;font-weight:600;">
             ${f.cuisine || "Cuisine N/A"}
@@ -109,6 +105,19 @@ export default function Favorites() {
             {favorites.map((f) => (
               <div key={f.id} className="bg-white rounded-2xl border border-gray-100 p-3 flex items-start justify-between">
                 <div onClick={() => centerOn(f)} className="cursor-pointer">
+                  <img
+                    src={getStallImage(f)}
+                    alt={f.name || "Favorite stall"}
+                    loading="lazy"
+                    className="mb-2 h-28 w-full rounded-xl object-cover"
+                    onError={(e) => {
+                      e.currentTarget.src = getStallImage({
+                        ...f,
+                        imageUrl: "",
+                        photoUrl: "",
+                      });
+                    }}
+                  />
                   <div className="text-sm font-semibold text-gray-800">{f.name}</div>
                   <div className="text-xs text-gray-400">{f.cuisine || "-"}</div>
                 </div>

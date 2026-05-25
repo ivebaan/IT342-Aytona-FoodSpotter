@@ -1,4 +1,5 @@
 import { NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../features/auth/hooks/useAuth";
 
 const navItemBaseClass =
   "group inline-flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-semibold transition-all duration-300 ease-out";
@@ -103,20 +104,20 @@ function SidebarIcon({ name }) {
 
 export default function AppSidebar() {
   const navigate = useNavigate();
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
-  const isAdmin = currentUser.role === "ADMIN";
+  const { user: currentUser, logout } = useAuth();
+  const user = currentUser || {};
+  const isAdmin = user.role === "ADMIN";
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
+    logout();
     navigate("/login");
   };
 
-  const displayName = [currentUser.firstname, currentUser.lastname]
+  const displayName = [user.firstname, user.lastname]
     .filter(Boolean)
     .join(" ")
     .trim();
-  const initials = `${currentUser.firstname?.[0] || "F"}${currentUser.lastname?.[0] || "S"}`;
+  const initials = `${user.firstname?.[0] || "F"}${user.lastname?.[0] || "S"}`;
 
   return (
     <aside className="app-sidebar relative flex w-full flex-col overflow-hidden border-r border-orange-100/70 bg-white/95 shadow-[18px_0_50px_rgba(15,23,42,0.05)] backdrop-blur-2xl md:min-h-screen md:w-80">
@@ -125,18 +126,16 @@ export default function AppSidebar() {
       <div className="relative border-b border-orange-100/40 px-6 py-6">
         <div className="flex items-start gap-3 rounded-2xl border border-white/50 bg-gradient-to-br from-white via-white/95 to-orange-50/40 p-5 shadow-[0_20px_45px_rgba(15,23,42,0.08)] backdrop-blur-xl transition-all duration-300 hover:shadow-[0_24px_48px_rgba(251,146,60,0.12)]">
           <img
-            src="/logo.svg"
+            src="/image.png"
             alt="FoodSpotter"
-            className="h-12 w-12 shrink-0 shadow-md shadow-orange-500/15 ring-1 ring-white/60"
+            className="h-12 w-18 shrink-0 shadow-md shadow-orange-500/15 ring-1 ring-white/60"
           />
           <div className="min-w-0 flex-1">
             <div className="flex items-center justify-between gap-3">
               <p className="truncate text-base font-bold tracking-tight text-slate-950">
                 FoodSpotter
               </p>
-              <span className="rounded-full bg-gradient-to-r from-orange-100 to-rose-100 px-2.5 py-1.5 text-[10px] font-bold uppercase tracking-[0.18em] text-orange-700 shadow-sm">
-                Live
-              </span>
+              
             </div>
             <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
               Discover & manage the best food spots
@@ -171,7 +170,7 @@ export default function AppSidebar() {
           </NavLink>
         ))}
 
-        {(currentUser.role === "VENDOR" || currentUser.role === "OWNER") && (
+        {(user.role === "VENDOR" || user.role === "OWNER" || user.role === "ADMIN" || user.role === "SUPER_ADMIN") && (
           <div className="mt-3 rounded-xl border border-emerald-200/60 bg-gradient-to-br from-emerald-50/70 to-emerald-50/40 p-4 shadow-sm transition-all duration-300 md:mt-4">
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-700">
               Vendor Tools
@@ -256,7 +255,7 @@ export default function AppSidebar() {
                 {displayName || "Your account"}
               </p>
               <p className="mt-0.5 truncate text-xs text-slate-500">
-                {currentUser.email || "Signed in"}
+                {user.email || "Signed in"}
               </p>
             </div>
           </div>

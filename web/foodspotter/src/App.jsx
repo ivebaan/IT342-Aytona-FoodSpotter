@@ -8,6 +8,7 @@ import Settings from "./pages/Settings";
 import VendorStalls from "./pages/VendorStalls";
 import Explore from "./pages/Explore";
 import AdminPanel from "./pages/AdminPanel";
+import { AuthProvider, useAuth } from "./features/auth/hooks/useAuth";
 
 function PrivateRoute({ children }) {
   const token = localStorage.getItem("token");
@@ -15,86 +16,101 @@ function PrivateRoute({ children }) {
 }
 
 function PrivateVendorRoute({ children }) {
+  const { user, loading } = useAuth();
+  const currentUser = user || {};
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center text-sm text-gray-500">Syncing your account...</div>;
+  }
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
   if (!token) return <Navigate to="/login" replace />;
-  if (user.role !== "VENDOR" && user.role !== "OWNER")
+  if (
+    currentUser.role !== "VENDOR" &&
+    currentUser.role !== "OWNER" &&
+    currentUser.role !== "ADMIN" &&
+    currentUser.role !== "SUPER_ADMIN"
+  )
     return <Navigate to="/dashboard" replace />;
   return children;
 }
 
 function PrivateAdminRoute({ children }) {
+  const { user, loading } = useAuth();
+  const currentUser = user || {};
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center text-sm text-gray-500">Syncing your account...</div>;
+  }
   const token = localStorage.getItem("token");
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
   if (!token) return <Navigate to="/login" replace />;
-  if (user.role !== "ADMIN") return <Navigate to="/dashboard" replace />;
+  if (currentUser.role !== "ADMIN" && currentUser.role !== "SUPER_ADMIN") return <Navigate to="/dashboard" replace />;
   return children;
 }
 
 export default function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<Navigate to="/register" replace />} />
-        <Route path="/register" element={<RegisterPage />} />
-        <Route path="/login" element={<LoginPage />} />
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/profile"
-          element={
-            <PrivateRoute>
-              <Profile />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/favorites"
-          element={
-            <PrivateRoute>
-              <Favorites />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/explore"
-          element={
-            <PrivateRoute>
-              <Explore />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            <PrivateRoute>
-              <Settings />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/vendor/stalls"
-          element={
-            <PrivateVendorRoute>
-              <VendorStalls />
-            </PrivateVendorRoute>
-          }
-        />
-        <Route
-          path="/admin/panel"
-          element={
-            <PrivateAdminRoute>
-              <AdminPanel />
-            </PrivateAdminRoute>
-          }
-        />
-      </Routes>
-    </BrowserRouter>
+    <AuthProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<Navigate to="/register" replace />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <PrivateRoute>
+                <Profile />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/favorites"
+            element={
+              <PrivateRoute>
+                <Favorites />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/explore"
+            element={
+              <PrivateRoute>
+                <Explore />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/settings"
+            element={
+              <PrivateRoute>
+                <Settings />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/vendor/stalls"
+            element={
+              <PrivateVendorRoute>
+                <VendorStalls />
+              </PrivateVendorRoute>
+            }
+          />
+          <Route
+            path="/admin/panel"
+            element={
+              <PrivateAdminRoute>
+                <AdminPanel />
+              </PrivateAdminRoute>
+            }
+          />
+        </Routes>
+      </BrowserRouter>
+    </AuthProvider>
   );
 }

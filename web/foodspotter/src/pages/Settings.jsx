@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import AppLayout from "../components/AppLayout";
+import { useAuth } from "../features/auth/hooks/useAuth";
+import { clearFavoritesForUser } from "../features/favorites/favoritesStorage";
 
 const SETTINGS_KEY = "settings";
 
@@ -16,6 +18,8 @@ const defaultSettings = {
 };
 
 export default function Settings() {
+  const { user } = useAuth();
+  const currentEmail = user?.email || "";
   const [settings, setSettings] = useState(defaultSettings);
   const [saveMessage, setSaveMessage] = useState("");
 
@@ -49,7 +53,7 @@ export default function Settings() {
         "Are you sure you want to clear all favorites? This cannot be undone.",
       )
     ) {
-      localStorage.removeItem("favorites");
+      clearFavoritesForUser(currentEmail);
       setSaveMessage("✓ Favorites cleared");
       setTimeout(() => setSaveMessage(""), 3000);
     }
