@@ -4,7 +4,7 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFF8F1">
+    android:background="@color/brand_surface">
 
     <fragment
         android:id="@+id/nav_host_fragment_activity_main"
@@ -22,6 +22,7 @@
         android:id="@+id/nav_view"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_margin="12dp"
         android:background="#FFFFFF"
         android:elevation="12dp"
         app:labelVisibilityMode="labeled"
