@@ -4,17 +4,23 @@ import { getVendorStalls, updateStall } from "../features/stalls/api/stalls";
 import { getStallVisual, formatCurrency } from "../features/stalls/utils/stallPresentation";
 import { CUISINE_OPTIONS } from "../constants/cuisineOptions";
 import AppLayout from "../components/AppLayout";
+import { useAuth } from "../features/auth/hooks/useAuth";
 
 export default function VendorStalls() {
   const navigate = useNavigate();
-  const currentUser = JSON.parse(localStorage.getItem("user") || "{}");
+  const { user: currentUser } = useAuth();
 
   // Redirect if not vendor
   useEffect(() => {
-    if (currentUser.role !== "VENDOR" && currentUser.role !== "OWNER") {
+    if (
+      currentUser?.role !== "VENDOR" &&
+      currentUser?.role !== "OWNER" &&
+      currentUser?.role !== "ADMIN" &&
+      currentUser?.role !== "SUPER_ADMIN"
+    ) {
       navigate("/dashboard");
     }
-  }, [currentUser.role, navigate]);
+  }, [currentUser?.role, navigate]);
 
   const [vendorStalls, setVendorStalls] = useState([]);
   const [selectedStall, setSelectedStall] = useState(null);
@@ -57,10 +63,10 @@ export default function VendorStalls() {
       }
     };
 
-    if (currentUser.email) {
+    if (currentUser?.email) {
       fetchVendorStalls();
     }
-  }, [currentUser.email]);
+  }, [currentUser?.email]);
 
 
   const handleSelectStall = (stall) => {

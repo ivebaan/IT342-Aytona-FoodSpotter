@@ -1,5 +1,5 @@
-import { useMemo } from "react";
 import AppSidebar from "./AppSidebar";
+import { useAuth } from "../features/auth/hooks/useAuth";
 
 export default function AppLayout({
   title,
@@ -7,24 +7,22 @@ export default function AppLayout({
   children,
   fullScreen = false,
 }) {
-  const user = useMemo(
-    () => JSON.parse(localStorage.getItem("user") || "{}"),
-    [],
-  );
+  const { user } = useAuth();
+  const currentUser = user || {};
 
   return (
-    <div className="min-h-screen bg-[radial-gradient(circle_at_top,#fff7ed_0%,#fffdf9_30%,#f8fafc_68%,#eef2ff_100%)] md:flex">
+    <div className="min-h-screen bg-[radial-gradient(circle_at_top,#fff7ed_0%,#fffdf9_30%,#f8fafc_68%,#eef2ff_100%)] md:flex md:overflow-hidden">
       <AppSidebar />
 
-      <div className="flex-1 flex flex-col md:max-h-screen">
+      <div className="flex flex-1 min-h-0 flex-col md:max-h-screen">
         <header className="sticky top-0 z-20 shrink-0 border-b border-orange-100/80 bg-white/85 backdrop-blur-xl shadow-[0_8px_30px_rgba(15,23,42,0.04)]">
           <div className="max-w-6xl mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-4">
             <div className="flex items-center gap-3 min-w-0">
               <img
-                src="/logo.svg"
-                alt="FoodSpotter"
-                className="h-11 w-11 shrink-0 drop-shadow-sm"
-              />
+            src="/image.png"
+            alt="FoodSpotter"
+            className="h-12 w-18 shrink-0 shadow-md shadow-orange-500/15 ring-1 ring-white/60"
+          />
               <div className="min-w-0">
                 <p className="truncate text-sm font-bold tracking-tight header-title sm:text-base">
                   FoodSpotter
@@ -37,10 +35,10 @@ export default function AppLayout({
 
             <div className="hidden rounded-2xl border border-orange-100 bg-orange-50/80 px-4 py-2 text-right shadow-sm sm:block">
               <p className="text-sm font-semibold text-gray-800">
-                {user.firstname || "User"} {user.lastname || ""}
+                {currentUser.firstname || "User"} {currentUser.lastname || ""}
               </p>
               <p className="text-[11px] font-medium uppercase tracking-[0.16em] text-orange-700">
-                {user.role || "USER"}
+                {currentUser.role || "USER"}
               </p>
             </div>
           </div>
@@ -49,8 +47,8 @@ export default function AppLayout({
         <main
           className={
             fullScreen
-              ? "flex-1 overflow-hidden"
-              : "flex-1 overflow-auto max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8 w-full"
+              ? "flex-1 min-h-0 overflow-hidden"
+              : "flex-1 min-h-0 overflow-y-auto max-w-6xl mx-auto px-4 sm:px-6 py-6 sm:py-8 space-y-8 w-full"
           }
         >
           {!fullScreen && (

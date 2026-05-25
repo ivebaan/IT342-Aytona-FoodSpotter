@@ -15,6 +15,12 @@ import {
 } from "../features/stalls/utils/stallPresentation";
 import { CUISINE_OPTIONS } from "../constants/cuisineOptions";
 import AppLayout from "../components/AppLayout";
+import { useAuth } from "../features/auth/hooks/useAuth";
+import {
+  addFavorite as storeFavorite,
+  readFavorites,
+  removeFavorite as removeStoredFavorite,
+} from "../features/favorites/favoritesStorage";
 
 const draftPinIcon = L.divIcon({
   className: "",
@@ -71,13 +77,12 @@ const formatMenuEditorText = (menuJson) => {
 
 export default function Dashboard() {
   const navigate = useNavigate();
-  const [currentUser, setCurrentUser] = useState(
-    JSON.parse(localStorage.getItem("user") || "{}"),
-  );
+  const { user: currentUser } = useAuth();
 
   const mapContainerRef = useRef(null);
   const mapInstanceRef = useRef(null);
   const markersRef = useRef([]);
+  const draftMarkerRef = useRef(null);
 
   const [stalls, setStalls] = useState([]);
   const [selectedStall, setSelectedStall] = useState(null);
@@ -97,14 +102,38 @@ export default function Dashboard() {
     name: "",
     description: "",
     cuisine: "",
+    imageUrl: "",
   });
   const [formError, setFormError] = useState("");
   const [formSuccess, setFormSuccess] = useState("");
   const [submitting, setSubmitting] = useState(false);
   const [isVendorPanelCollapsed, setIsVendorPanelCollapsed] = useState(false);
-  const [showVendorForm, setShowVendorForm] = useState(
-    currentUser.role === "VENDOR" || currentUser.role === "OWNER",
-  );
+  const [showVendorForm, setShowVendorForm] = useState(false);
+
+  const normalizeErrorMessage = (value) => {
+    if (typeof value === "string") return value;
+    if (Array.isArray(value)) return value.filter(Boolean).join(", ");
+    if (value && typeof value === "object") return Object.values(value).filter(Boolean).join(", ");
+    return "Failed to create stall. Please try again.";
+  };
+
+  useEffect(() => {
+    setShowVendorForm(
+      currentUser?.role === "VENDOR" ||
+        currentUser?.role === "OWNER" ||
+        currentUser?.role === "ADMIN" ||
+        currentUser?.role === "SUPER_ADMIN",
+    );
+  }, [currentUser?.role]);
+
+  const clearSelectedLocation = () => {
+    const map = mapInstanceRef.current;
+    if (map && draftMarkerRef.current) {
+      map.removeLayer(draftMarkerRef.current);
+    }
+    draftMarkerRef.current = null;
+    setSelectedLocation(null);
+  };
 
   const configuredTileUrl = import.meta.env.VITE_MAP_TILE_URL;
   const configuredAttribution = import.meta.env.VITE_MAP_ATTRIBUTION;
@@ -195,12 +224,17 @@ export default function Dashboard() {
 
     map.on("click", (e) => {
       const { lat, lng } = e.latlng;
+      if (draftMarkerRef.current) {
+        map.removeLayer(draftMarkerRef.current);
+      }
+
       const marker = L.marker([lat, lng], { icon: draftPinIcon }).addTo(map);
       marker
         .bindPopup(
           `📍 New stall location selected<br/>Lat: ${lat.toFixed(5)}<br/>Lng: ${lng.toFixed(5)}`,
         )
         .openPopup();
+      draftMarkerRef.current = marker;
 
       setSelectedLocation({ lat, lng });
     });
@@ -212,40 +246,23 @@ export default function Dashboard() {
       map.off();
       map.remove();
       mapInstanceRef.current = null;
+      draftMarkerRef.current = null;
     };
   }, [primaryAttribution, primaryTileUrl]);
 
-  // Favorite helpers (stored in localStorage)
-  const FAVORITES_KEY = "favorites";
-
-  const getFavorites = () => {
-    try {
-      return JSON.parse(localStorage.getItem(FAVORITES_KEY) || "[]");
-    } catch (e) {
-      return [];
-    }
-  };
-
-  const saveFavorites = (arr) => {
-    localStorage.setItem(FAVORITES_KEY, JSON.stringify(arr || []));
-  };
+  const currentEmail = currentUser?.email || "";
 
   const isFavorite = (id) => {
     if (id == null) return false;
-    return getFavorites().some((f) => f.id === id);
+    return readFavorites(currentEmail).some((favorite) => favorite.id === id);
   };
 
   const addFavorite = (stall) => {
-    const favs = getFavorites();
-    if (!favs.some((f) => f.id === stall.id)) {
-      favs.push(stall);
-      saveFavorites(favs);
-    }
+    storeFavorite(currentEmail, stall);
   };
 
   const removeFavorite = (id) => {
-    const favs = getFavorites().filter((f) => f.id !== id);
-    saveFavorites(favs);
+    removeStoredFavorite(currentEmail, id);
   };
 
   const toggleFavorite = (stall, marker) => {
@@ -314,8 +331,44 @@ export default function Dashboard() {
       const favLabel = isFavorite(stall.id)
         ? "Remove Favorite"
         : "Add Favorite";
+      const stallImage = getStallImage(stall);
+      const stallMenu = getStallMenu(stall).slice(0, 3);
+      const stallMenuHtml = stallMenu.length
+        ? `
+          <div style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:10px;">
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:8px;">
+              <div style="font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:#6b7280;">Menu Preview</div>
+              <div style="font-size:10px;color:#9ca3af;">${stallMenu.length} item${stallMenu.length === 1 ? "" : "s"}</div>
+            </div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;">
+              ${stallMenu
+                .map(
+                  (item) => `
+                    <div style="overflow:hidden;border:1px solid #e5e7eb;border-radius:12px;background:#fff;">
+                      <div style="height:72px;background:#f3f4f6;overflow:hidden;">
+                        <img src="${item.imageUrl || stallImage}" alt="${item.name || "Menu item"}" style="display:block;width:100%;height:100%;object-fit:cover;" />
+                      </div>
+                      <div style="padding:7px 8px 8px;">
+                        <div style="font-size:11px;font-weight:700;color:#111827;line-height:1.25;">${item.name || "Menu Item"}</div>
+                        <div style="margin-top:4px;font-size:10px;color:#f97316;font-weight:700;">${formatCurrency(item.price)}</div>
+                      </div>
+                    </div>
+                  `,
+                )
+                .join("")}
+            </div>
+          </div>
+        `
+        : `
+          <div style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:10px;font-size:11px;color:#6b7280;">
+            No menu items were provided.
+          </div>
+        `;
       const popupHtml = `
         <div style="min-width:220px;max-width:260px;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;">
+          <div style="overflow:hidden;border-radius:16px;border:1px solid #e5e7eb;background:#f9fafb;margin-bottom:10px;">
+            <img src="${stallImage}" alt="${stall.name || "Stall"}" style="display:block;width:100%;height:120px;object-fit:cover;" />
+          </div>
           <div style="padding:2px 0 4px;">
             <div style="font-size:15px;font-weight:700;color:#111827;line-height:1.2;">${stall.name}</div>
             <div style="margin-top:6px;display:inline-block;padding:4px 9px;border-radius:999px;background:#fff7ed;border:1px solid #fed7aa;color:#c2410c;font-size:11px;font-weight:600;">
@@ -328,6 +381,8 @@ export default function Dashboard() {
               ${stall.description || "No description provided."}
             </p>
           </div>
+
+          ${stallMenuHtml}
 
           <div style="margin-top:10px;display:flex;gap:8px;">
             <button id="fav-btn-${stall.id}" style="flex:1;padding:8px 10px;border-radius:10px;border:1px solid #fecaca;background:#fff1f2;color:#be123c;cursor:pointer;font-size:12px;font-weight:600;box-shadow:0 1px 2px rgba(15,23,42,.08);transition:all .2s ease;">
@@ -375,10 +430,13 @@ export default function Dashboard() {
   const selectedStallMenu = selectedStall ? getStallMenu(selectedStall) : [];
   const canEditSelectedStall =
     Boolean(selectedStall?.ownerEmail) &&
-    Boolean(currentUser.email) &&
+    Boolean(currentUser?.email) &&
     selectedStall.ownerEmail.toLowerCase() ===
       currentUser.email.toLowerCase() &&
-    (currentUser.role === "VENDOR" || currentUser.role === "OWNER");
+    (currentUser?.role === "VENDOR" ||
+      currentUser?.role === "OWNER" ||
+      currentUser?.role === "ADMIN" ||
+      currentUser?.role === "SUPER_ADMIN");
 
   useEffect(() => {
     if (!selectedStall || !canEditSelectedStall) {
@@ -503,7 +561,7 @@ export default function Dashboard() {
       return;
     }
 
-    if (!name || !description || !cuisine) {
+    if (!name || !description || !cuisine || !form.imageUrl.trim()) {
       setFormError("Please fill in all stall details.");
       return;
     }
@@ -528,32 +586,26 @@ export default function Dashboard() {
         cuisine,
         latitude: selectedLocation.lat,
         longitude: selectedLocation.lng,
+        imageUrl: form.imageUrl.trim(),
       };
 
       const response = await createStall(token, payload);
 
       if (response && response.success && response.data) {
-        const updatedUser = {
-          ...currentUser,
-          role: "VENDOR",
-        };
-        localStorage.setItem("user", JSON.stringify(updatedUser));
-        setCurrentUser(updatedUser);
         setShowVendorForm(true);
 
         setStalls((prev) => [...prev, response.data]);
-        setForm({ name: "", description: "", cuisine: "" });
+        setForm({ name: "", description: "", cuisine: "", imageUrl: "" });
+        clearSelectedLocation();
         setFormSuccess(
-          "Business registration submitted. Your account is now tagged as VENDOR. Listing will appear once approved.",
+          "Business registration submitted. Your stall is pending admin review and your account will stay unchanged until manually promoted.",
         );
       }
     } catch (error) {
       console.error("Failed to create stall:", error);
       const errData = error.response?.data?.error;
       setFormError(
-        errData?.details ||
-          errData?.message ||
-          "Failed to create stall. Please try again.",
+        normalizeErrorMessage(errData?.details || errData?.message),
       );
     } finally {
       setSubmitting(false);
@@ -588,9 +640,17 @@ export default function Dashboard() {
             </div>
           )}
           {selectedLocation && (
-            <div className="absolute bottom-4 right-4 rounded-xl border border-white/60 bg-white/90 px-3 py-2 text-xs text-gray-700 shadow-lg backdrop-blur">
-              Selected: {selectedLocation.lat.toFixed(5)},{" "}
-              {selectedLocation.lng.toFixed(5)}
+            <div className="absolute bottom-4 right-4 flex items-center gap-2 rounded-xl border border-white/60 bg-white/90 px-3 py-2 text-xs text-gray-700 shadow-lg backdrop-blur">
+              <span>
+                Selected: {selectedLocation.lat.toFixed(5)}, {selectedLocation.lng.toFixed(5)}
+              </span>
+              <button
+                type="button"
+                onClick={clearSelectedLocation}
+                className="rounded-full border border-gray-200 bg-gray-50 px-2 py-1 text-[11px] font-semibold text-gray-600 hover:bg-gray-100"
+              >
+                Clear pin
+              </button>
             </div>
           )}
         </div>
@@ -649,39 +709,45 @@ export default function Dashboard() {
                     Complete Menu
                   </p>
                   <div className="mt-2 space-y-2">
-                    {selectedStallMenu.map((item, idx) => (
-                      <div
-                        key={`${item.name}-${idx}`}
-                        className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm"
-                      >
-                        {item.imageUrl && (
-                          <img
-                            src={item.imageUrl}
-                            alt={item.name}
-                            loading="lazy"
-                            className="h-28 w-full object-cover"
-                            onError={(e) => {
-                              e.currentTarget.style.display = "none";
-                            }}
-                          />
-                        )}
-                        <div className="px-3 py-2.5">
-                          <div className="flex items-center justify-between gap-3">
-                            <p className="text-sm font-semibold text-slate-900">
-                              {item.name}
-                            </p>
-                            <p className="text-xs font-bold text-orange-600">
-                              {formatCurrency(item.price)}
-                            </p>
-                          </div>
-                          {item.description && (
-                            <p className="mt-1 text-xs leading-5 text-slate-500">
-                              {item.description}
-                            </p>
+                    {selectedStallMenu.length === 0 ? (
+                      <p className="rounded-2xl border border-slate-100 bg-white px-3 py-3 text-xs text-slate-500 shadow-sm">
+                        No menu items were provided for this stall.
+                      </p>
+                    ) : (
+                      selectedStallMenu.map((item, idx) => (
+                        <div
+                          key={`${item.name}-${idx}`}
+                          className="overflow-hidden rounded-2xl border border-slate-100 bg-white shadow-sm"
+                        >
+                          {item.imageUrl && (
+                            <img
+                              src={item.imageUrl}
+                              alt={item.name}
+                              loading="lazy"
+                              className="h-28 w-full object-cover"
+                              onError={(e) => {
+                                e.currentTarget.style.display = "none";
+                              }}
+                            />
                           )}
+                          <div className="px-3 py-2.5">
+                            <div className="flex items-center justify-between gap-3">
+                              <p className="text-sm font-semibold text-slate-900">
+                                {item.name}
+                              </p>
+                              <p className="text-xs font-bold text-orange-600">
+                                {formatCurrency(item.price)}
+                              </p>
+                            </div>
+                            {item.description && (
+                              <p className="mt-1 text-xs leading-5 text-slate-500">
+                                {item.description}
+                              </p>
+                            )}
+                          </div>
                         </div>
-                      </div>
-                    ))}
+                      ))
+                    )}
                   </div>
                 </div>
 
@@ -837,7 +903,7 @@ export default function Dashboard() {
 
                     <p className="text-xs leading-5 text-slate-400">
                       After submitting stall details, your role will
-                      automatically update to VENDOR.
+                      stay unchanged until an admin reviews and promotes it.
                     </p>
                   </div>
                 )}
@@ -910,6 +976,20 @@ export default function Dashboard() {
                           placeholder="Short description of the stall"
                         />
                       </div>
+                      <div className="space-y-1">
+                        <label className="block text-xs font-medium text-slate-500">
+                          Stall image URL
+                        </label>
+                        <input
+                          type="url"
+                          name="imageUrl"
+                          value={form.imageUrl}
+                          onChange={handleFormChange}
+                          required
+                          className="w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm shadow-sm focus:outline-none focus:ring-2 focus:ring-orange-400 focus:border-orange-400"
+                          placeholder="https://.../stall.jpg"
+                        />
+                      </div>
                       <button
                         type="submit"
                         disabled={submitting}
@@ -921,12 +1001,13 @@ export default function Dashboard() {
                       </button>
                       <p className="text-[11px] text-gray-400">
                         Tip: Click on the map to choose the exact location
-                        first.
+                        first, then add an image URL that ends in .jpg, .jpeg,
+                        or .png.
                       </p>
                     </form>
 
                     <div className="mt-4 rounded-lg bg-blue-50 px-3 py-2 text-xs text-blue-700">
-                      Current role: {currentUser.role || "USER"}
+                      Current role: {currentUser?.role || "USER"}
                     </div>
                   </div>
                 )}
