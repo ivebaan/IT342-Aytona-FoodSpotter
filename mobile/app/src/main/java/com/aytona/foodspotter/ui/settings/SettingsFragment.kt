@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.aytona.foodspotter.R
@@ -31,6 +32,15 @@ class SettingsFragment : Fragment() {
         favoritesStore = FavoritesStore(requireContext())
         settingsStore = SettingsStore(requireContext())
 
+        val user = sessionManager.currentUser()
+        binding.settingsAccountSummary.text = if (sessionManager.isLoggedIn) {
+            val name = listOfNotNull(user?.firstname, user?.lastname).joinToString(" ").ifBlank { user?.email.orEmpty() }
+            val role = user?.role?.takeIf { it.isNotBlank() } ?: "USER"
+            "Signed in as $name • $role"
+        } else {
+            "You’re browsing as a guest. Sign in to sync favorites and stall submissions."
+        }
+
         binding.settingsApprovedOnly.isChecked = settingsStore.approvedOnly
         binding.settingsAutoCenter.isChecked = settingsStore.autoCenterOnSelect
         binding.settingsMyStallsFirst.isChecked = settingsStore.showMyStallsFirst
@@ -40,13 +50,38 @@ class SettingsFragment : Fragment() {
         binding.settingsMyStallsFirst.setOnCheckedChangeListener { _, checked -> settingsStore.showMyStallsFirst = checked }
 
         binding.settingsClearFavorites.setOnClickListener {
-            favoritesStore.clear()
-            binding.settingsMessage.text = "Favorites cleared."
+            AlertDialog.Builder(requireContext())
+                .setTitle("Clear favorites?")
+                .setMessage("This will remove all saved stalls on this device.")
+                .setPositiveButton("Clear") { _, _ ->
+                    favoritesStore.clear()
+                    binding.settingsMessage.text = "Favorites cleared."
+                    binding.settingsAccountSummary.text = if (sessionManager.isLoggedIn) {
+                        "Signed in settings saved. Favorites are now empty."
+                    } else {
+                        "Guest mode active. Favorites are now empty."
+                    }
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
         }
         binding.settingsLogout.setOnClickListener {
-            sessionManager.clear()
-            findNavController().navigate(R.id.navigation_auth)
+            AlertDialog.Builder(requireContext())
+                .setTitle("Log out?")
+                .setMessage("You will be returned to the sign-in screen.")
+                .setPositiveButton("Log out") { _, _ ->
+                    sessionManager.clear()
+                    navigateSafely(R.id.navigation_auth)
+                }
+                .setNegativeButton("Cancel", null)
+                .show()
         }
-        binding.settingsBackHome.setOnClickListener { findNavController().navigate(R.id.navigation_home) }
+        binding.settingsBackHome.setOnClickListener { navigateSafely(R.id.navigation_home) }
+    }
+
+    private fun navigateSafely(destinationId: Int) {
+        val navController = findNavController()
+        if (navController.currentDestination?.id == destinationId) return
+        runCatching { navController.navigate(destinationId) }
     }
 }

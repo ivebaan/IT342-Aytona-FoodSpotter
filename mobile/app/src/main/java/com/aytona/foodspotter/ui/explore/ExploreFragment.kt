@@ -17,6 +17,7 @@ import com.aytona.foodspotter.data.StallDto
 import com.aytona.foodspotter.databinding.FragmentExploreBinding
 import com.aytona.foodspotter.ui.CuisineOptions
 import com.aytona.foodspotter.ui.StallCardFactory
+import com.aytona.foodspotter.ui.stalls.StallDetailsDialogFragment
 import kotlinx.coroutines.launch
 
 class ExploreFragment : Fragment() {
@@ -109,6 +110,7 @@ class ExploreFragment : Fragment() {
                     isFavorite = favorites.any { it.id == stall.id },
                     onOpen = {
                         binding.exploreStatus.text = "Selected ${stall.name ?: "stall"}."
+                        StallDetailsDialogFragment.show(parentFragmentManager, stall)
                     },
                     onFavoriteToggle = {
                         favoritesStore.toggle(stall)

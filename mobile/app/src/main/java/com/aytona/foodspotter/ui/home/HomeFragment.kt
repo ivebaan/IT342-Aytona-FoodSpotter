@@ -10,6 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import coil.load
 import com.aytona.foodspotter.R
 import com.aytona.foodspotter.data.ApiClient
 import com.aytona.foodspotter.data.FavoritesStore
@@ -20,6 +21,7 @@ import com.aytona.foodspotter.data.StallDto
 import com.aytona.foodspotter.databinding.FragmentHomeBinding
 import com.aytona.foodspotter.ui.MapUtils
 import com.aytona.foodspotter.ui.StallCardFactory
+import com.aytona.foodspotter.ui.stalls.StallDetailsDialogFragment
 import kotlinx.coroutines.launch
 
 class HomeFragment : Fragment() {
@@ -140,10 +142,11 @@ class HomeFragment : Fragment() {
         }
         binding.homeAuthBanner.isVisible = !sessionManager.isLoggedIn
         binding.homeGoToAuthButton.isVisible = !sessionManager.isLoggedIn
-        binding.homeMyStallsCount.text = if (sessionManager.isLoggedIn) {
-            sessionManager.currentUser()?.role ?: "USER"
+        val currentEmail = sessionManager.currentUser()?.email
+        binding.homeMyStallsCount.text = if (sessionManager.isLoggedIn && !currentEmail.isNullOrBlank()) {
+            stalls.count { it.ownerEmail.equals(currentEmail, ignoreCase = true) }.toString()
         } else {
-            "Guest"
+            "0"
         }
     }
 
@@ -167,6 +170,12 @@ class HomeFragment : Fragment() {
         binding.homeSelectedCard.isVisible = stall != null
         if (stall == null) return
 
+        binding.homeSelectedImage.isVisible = !stall.imageUrl.isNullOrBlank()
+        if (!stall.imageUrl.isNullOrBlank()) {
+            binding.homeSelectedImage.load(stall.imageUrl) {
+                crossfade(true)
+            }
+        }
         binding.homeSelectedName.text = stall.name ?: "Food stall"
         binding.homeSelectedCuisine.text = stall.cuisine ?: "Cuisine"
         binding.homeSelectedDescription.text = stall.description ?: "No description available."
@@ -186,10 +195,8 @@ class HomeFragment : Fragment() {
                     isFavorite = favorites.any { it.id == stall.id },
                     onOpen = {
                         selectedStall = stall
-                        if (stall.latitude != null && stall.longitude != null) {
-                            MapUtils.centerOn(binding.homeMap, stall.latitude, stall.longitude)
-                        }
                         renderSelectedStall()
+                        StallDetailsDialogFragment.show(parentFragmentManager, stall)
                     },
                     onFavoriteToggle = {
                         favoritesStore.toggle(stall)
