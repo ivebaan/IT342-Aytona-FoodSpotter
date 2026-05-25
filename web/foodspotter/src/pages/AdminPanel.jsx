@@ -3,10 +3,11 @@ import AppLayout from "../components/AppLayout";
 import {
   approveStall,
   clearStallMenu,
+  getAdminStalls,
   getPendingStalls,
-  getStalls,
   rejectStall,
 } from "../features/stalls/api/stalls";
+import { getStallImage } from "../features/stalls/utils/stallPresentation";
 
 const statusStyles = {
   APPROVED: "border-emerald-200 bg-emerald-50 text-emerald-700",
@@ -39,9 +40,26 @@ function StallCard({ stall, onApprove, onReject, onClearMenu, actionBusyId }) {
   const isApproved = status === "APPROVED";
   const menuItems = getStoredMenuItems(stall);
   const hasMenu = menuItems.length > 0;
+  const stallImage = getStallImage(stall);
 
   return (
     <div className="rounded-3xl border border-gray-100 bg-white p-5 shadow-sm transition hover:shadow-md">
+      <div className="overflow-hidden rounded-2xl border border-gray-100 bg-gray-50">
+        <img
+          src={stallImage}
+          alt={stall.name || "Submitted stall"}
+          className="h-48 w-full object-cover"
+          loading="lazy"
+          onError={(event) => {
+            event.currentTarget.src = getStallImage({
+              ...stall,
+              imageUrl: "",
+              photoUrl: "",
+            });
+          }}
+        />
+      </div>
+
       <div className="flex items-start justify-between gap-3">
         <div>
           <h3 className="text-base font-semibold text-gray-900">
@@ -61,6 +79,17 @@ function StallCard({ stall, onApprove, onReject, onClearMenu, actionBusyId }) {
       <p className="mt-3 line-clamp-3 text-sm leading-6 text-gray-600">
         {stall.description || "No description provided."}
       </p>
+
+      <div className="mt-4 grid gap-2 text-xs text-gray-500 sm:grid-cols-2">
+        <div className="rounded-2xl bg-gray-50 px-3 py-2">
+          <span className="font-semibold text-gray-700">Image:</span>{" "}
+          {stall.imageUrl ? "Provided" : "Generated placeholder"}
+        </div>
+        <div className="rounded-2xl bg-gray-50 px-3 py-2">
+          <span className="font-semibold text-gray-700">Address:</span>{" "}
+          {stall.address || "-"}
+        </div>
+      </div>
 
       <div className="mt-4 grid gap-2 text-xs text-gray-500 sm:grid-cols-2">
         <div className="rounded-2xl bg-gray-50 px-3 py-2">
@@ -160,7 +189,7 @@ export default function AdminPanel() {
       setError("");
 
       const [allResponse, pendingResponse] = await Promise.all([
-        getStalls(token),
+        getAdminStalls(token),
         getPendingStalls(token),
       ]);
 
@@ -398,6 +427,22 @@ export default function AdminPanel() {
                       key={stall.id}
                       className="rounded-3xl border border-amber-100 bg-amber-50/70 p-4"
                     >
+                      <div className="mb-3 overflow-hidden rounded-2xl border border-amber-100 bg-white shadow-sm">
+                        <img
+                          src={getStallImage(stall)}
+                          alt={stall.name || "Pending stall"}
+                          className="h-40 w-full object-cover"
+                          loading="lazy"
+                          onError={(event) => {
+                            event.currentTarget.src = getStallImage({
+                              ...stall,
+                              imageUrl: "",
+                              photoUrl: "",
+                            });
+                          }}
+                        />
+                      </div>
+
                       <div className="flex items-start justify-between gap-3">
                         <div>
                           <p className="font-semibold text-gray-900">
@@ -415,6 +460,17 @@ export default function AdminPanel() {
                       <p className="mt-2 line-clamp-2 text-sm text-gray-600">
                         {stall.description || "No description provided."}
                       </p>
+
+                      <div className="mt-3 grid gap-2 text-xs text-gray-600 sm:grid-cols-2">
+                        <div className="rounded-2xl bg-white px-3 py-2">
+                          <span className="font-semibold text-gray-700">Image:</span>{" "}
+                          {stall.imageUrl ? "Provided" : "Generated placeholder"}
+                        </div>
+                        <div className="rounded-2xl bg-white px-3 py-2">
+                          <span className="font-semibold text-gray-700">Address:</span>{" "}
+                          {stall.address || "-"}
+                        </div>
+                      </div>
 
                       <div className="mt-3 flex gap-2">
                         <button

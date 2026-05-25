@@ -49,8 +49,8 @@ export default function RegisterPage() {
     setError(null);
     try {
       const res = await register({ firstname, lastname, email, password });
-      const accessToken = res?.data?.accessToken;
-      const user = res?.data?.user;
+      const accessToken = res?.accessToken;
+      const user = res?.user;
 
       if (!accessToken || !user) {
         throw new Error("Invalid registration response from server.");

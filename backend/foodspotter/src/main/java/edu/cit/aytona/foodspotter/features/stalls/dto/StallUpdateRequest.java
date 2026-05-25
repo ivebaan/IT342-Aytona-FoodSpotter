@@ -14,6 +14,8 @@ public class StallUpdateRequest {
     private String description;
     private String cuisine;
     private String imageUrl;
+    private Long imageSizeBytes;
+    private String address;
     private String menuJson;
     private String latitude;
     private String longitude;

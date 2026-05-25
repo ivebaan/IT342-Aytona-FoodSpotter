@@ -15,6 +15,8 @@ public class StallDTO {
     private String description;
     private String cuisine;
     private String imageUrl;
+    private Long imageSizeBytes;
+    private String address;
     private String menuJson;
     private Double latitude;
     private Double longitude;

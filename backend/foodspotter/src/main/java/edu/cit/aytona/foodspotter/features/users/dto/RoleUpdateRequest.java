@@ -1,5 +1,6 @@
-package edu.cit.aytona.foodspotter.features.auth.dto;
+package edu.cit.aytona.foodspotter.features.users.dto;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,10 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
-    private Long id;
-    private String firstname;
-    private String lastname;
-    private String email;
+public class RoleUpdateRequest {
+    @NotBlank(message = "Role is required")
     private String role;
 }

@@ -38,6 +38,13 @@ public class StallController {
         return ResponseEntity.ok(ApiResponse.ok(stalls));
     }
 
+    @GetMapping("/admin/all")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
+    public ResponseEntity<ApiResponse<List<StallDTO>>> getAllStallsForAdmin() {
+        List<StallDTO> stalls = stallService.getAllAdminStalls();
+        return ResponseEntity.ok(ApiResponse.ok(stalls));
+    }
+
     @GetMapping({"/me", "/mine"})
     public ResponseEntity<ApiResponse<List<StallDTO>>> getMyStalls(@AuthenticationPrincipal org.springframework.security.core.userdetails.UserDetails userDetails) {
         String email = userDetails == null ? null : userDetails.getUsername();
@@ -68,28 +75,28 @@ public class StallController {
     }
 
     @GetMapping("/admin/pending-stalls")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<List<StallDTO>>> getPendingStalls() {
         List<StallDTO> stalls = stallService.getPendingStalls();
         return ResponseEntity.ok(ApiResponse.ok(stalls));
     }
 
     @PutMapping("/admin/stalls/{id}/approve")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<StallDTO>> approveStall(@PathVariable Long id) {
         StallDTO stall = stallService.approveStall(id);
         return ResponseEntity.ok(ApiResponse.ok(stall));
     }
 
     @PutMapping("/admin/stalls/{id}/clear-menu")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<StallDTO>> clearMenu(@PathVariable Long id) {
         StallDTO stall = stallService.clearMenu(id);
         return ResponseEntity.ok(ApiResponse.ok(stall));
     }
 
     @DeleteMapping("/admin/stalls/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN', 'SUPER_ADMIN')")
     public ResponseEntity<ApiResponse<Void>> deleteStall(@PathVariable Long id) {
         stallService.deleteStall(id);
         return ResponseEntity.ok(ApiResponse.ok(null));

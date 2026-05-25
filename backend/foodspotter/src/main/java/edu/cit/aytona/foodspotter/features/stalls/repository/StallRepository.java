@@ -6,4 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface StallRepository extends JpaRepository<Stall, Long> {
+	java.util.List<Stall> findBySubmittedBy_EmailIgnoreCase(String email);
 }

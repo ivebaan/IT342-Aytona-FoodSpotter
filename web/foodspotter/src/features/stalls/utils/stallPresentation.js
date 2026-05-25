@@ -1,4 +1,5 @@
 const VISUAL_RULES = [
+  // 🍛 Local Eatery / Karinderya
   {
     category: "karinderya",
     keywords: [
@@ -6,59 +7,221 @@ const VISUAL_RULES = [
       "carinderia",
       "eatery",
       "canteen",
+      "food stall",
+      "food court stall",
+      "street food stall",
+      "night market stall",
+      "market stall",
+      "kiosk",
+      "sari-sari store",
       "turo",
+      "turo-turo",
       "silogan",
       "lugawan",
       "pares",
+      "paresan",
+      "sisig",
+      "sisigan",
+      "bulalohan",
+      "bulalo",
+      "gotohan",
+      "mami house",
+      "panciteria",
+      "palabokan",
+      "tuslob",
+      "tuslob buwa",
+      "tuslob buwa-an",
+      "rice meal stall",
+      "rice toppings stall",
+      "rice bowl stall",
+      "snack stall",
     ],
     emoji: "🍛",
     color: "#f97316",
     label: "Local Eatery",
   },
+
+  // ☕ Cafe / Drinks / Chill
   {
     category: "cafe",
-    keywords: ["cafe", "coffee", "milk tea", "matcha", "co-working"],
+    keywords: [
+      "cafe",
+      "coffee shop",
+      "coffee stand",
+      "coffee",
+      "milk tea shop",
+      "milk tea stand",
+      "milk tea",
+      "matcha",
+      "tea house",
+      "co-working cafe",
+      "co working cafe",
+      "aesthetic cafe",
+      "minimalist cafe",
+      "plant cafe",
+      "pet cafe",
+      "book cafe",
+      "gaming cafe",
+      "internet cafe",
+      "art cafe",
+      "smoothie bar",
+      "juice bar",
+      "shake stand",
+    ],
     emoji: "☕",
     color: "#0ea5e9",
     label: "Cafe",
   },
+
+  // 🍔 Fast Food / Quick Service
   {
     category: "fastfood",
-    keywords: ["fast food", "burger", "fries", "shawarma", "hotdog"],
+    keywords: [
+      "fast food",
+      "fastfood",
+      "burger",
+      "burger stall",
+      "burger joint",
+      "fries",
+      "hotdog",
+      "hotdog stand",
+      "shawarma",
+      "shawarma stand",
+      "sandwich stall",
+      "pizza stall",
+      "chicken stall",
+      "fried chicken",
+      "drive-thru",
+      "takeout counter",
+    ],
     emoji: "🍔",
     color: "#ef4444",
     label: "Fast Food",
   },
+
+  // 🍰 Desserts / Bakery
   {
     category: "dessert",
     keywords: [
       "dessert",
+      "dessert shop",
+      "dessert stall",
       "pastry",
       "bakery",
+      "pastry shop",
+      "halo-halo",
       "halo",
       "ice cream",
+      "ice cream stall",
       "cheesecake",
       "souffle",
       "croffle",
       "ube",
+      "cake",
+      "cookie",
+      "donut",
+      "sweet",
+      "dessert cafe",
+      "dessert buffet cafe",
     ],
     emoji: "🍰",
     color: "#ec4899",
     label: "Dessert Shop",
   },
+
+  // 🔥 Grill / BBQ / Inihaw
   {
     category: "grill",
-    keywords: ["ihawan", "inasal", "isaw", "samgyup", "wings", "grill"],
+    keywords: [
+      "ihawan",
+      "inasal",
+      "inasal house",
+      "isaw",
+      "samgyup",
+      "samgyupsal",
+      "grill",
+      "grill house",
+      "bbq",
+      "barbecue",
+      "bbq stall",
+      "grilled food stall",
+      "street bbq stall",
+      "skewer stall",
+      "wings",
+      "chicken wings",
+      "chicken stall",
+      "sisig",
+    ],
     emoji: "🔥",
     color: "#f59e0b",
     label: "Grill House",
   },
+
+  // 🦐 Seafood / Dampa / Boil
   {
     category: "seafood",
-    keywords: ["seafood", "dampa", "boil"],
+    keywords: [
+      "seafood",
+      "seafood house",
+      "seafood stall",
+      "dampa",
+      "boil",
+      "seafood boil",
+      "crab",
+      "shrimp",
+      "hipon",
+      "isda",
+    ],
     emoji: "🦐",
     color: "#06b6d4",
     label: "Seafood",
+  },
+
+  // 🌮 Street Food (NEW - important layer)
+  {
+    category: "streetfood",
+    keywords: [
+      "street food",
+      "street stall",
+      "street food stall",
+      "night market",
+      "night market stall",
+      "pungko",
+      "pungko-pungko",
+      "fishball",
+      "fish ball",
+      "kwek kwek",
+      "tempura",
+      "balut",
+      "penoy",
+      "betamax",
+      "adidas",
+      "helmet",
+      "walkman",
+      "isaw",
+      "banana cue",
+      "kamote cue",
+      "turon",
+      "maruya",
+      "dirty ice cream",
+      "ice scramble",
+      "mais",
+      "buko juice",
+      "sugarcane juice",
+      "palamig",
+      "hotdog stand",
+      "burger stand",
+      "fries stand",
+      "siomai",
+      "siopao",
+      "takoyaki",
+      "skewer stall",
+      "food cart",
+      "mobile food cart",
+    ],
+    emoji: "🍡",
+    color: "#f97316",
+    label: "Street Food",
   },
 ];
 
@@ -131,44 +294,6 @@ function normalizeMenuItems(rawItems) {
     .filter(Boolean);
 }
 
-const MENU_TEMPLATES = {
-  karinderya: [
-    { name: "Pork Adobo Meal", price: 89, description: "Served with steamed rice" },
-    { name: "Chicken Tinola", price: 95, description: "Comforting ginger broth" },
-    { name: "Ginataang Gulay", price: 75, description: "Coconut milk veggie stew" },
-  ],
-  cafe: [
-    { name: "Cafe Latte", price: 120, description: "Double shot espresso" },
-    { name: "Spanish Bread", price: 55, description: "Freshly baked" },
-    { name: "Iced Matcha", price: 135, description: "Creamy and smooth" },
-  ],
-  fastfood: [
-    { name: "Classic Burger", price: 99, description: "With fries" },
-    { name: "Cheesy Hotdog Sandwich", price: 79, description: "House sauce" },
-    { name: "Loaded Fries", price: 85, description: "Cheese and bacon bits" },
-  ],
-  dessert: [
-    { name: "Halo-Halo Special", price: 120, description: "Ube ice cream topper" },
-    { name: "Leche Flan Slice", price: 65, description: "Creamy caramel custard" },
-    { name: "Croffle", price: 95, description: "Buttery and crisp" },
-  ],
-  grill: [
-    { name: "Chicken Inasal", price: 110, description: "Char-grilled quarter" },
-    { name: "Pork BBQ Skewers", price: 85, description: "Sweet-savory glaze" },
-    { name: "Isaw Combo", price: 70, description: "With spiced vinegar" },
-  ],
-  seafood: [
-    { name: "Garlic Butter Shrimp", price: 155, description: "Served with rice" },
-    { name: "Grilled Squid", price: 165, description: "Calamansi-soy dip" },
-    { name: "Seafood Boil Solo", price: 195, description: "Crab, shrimp, corn" },
-  ],
-  general: [
-    { name: "House Rice Meal", price: 95, description: "Chef's daily special" },
-    { name: "Signature Snack", price: 75, description: "Popular crowd favorite" },
-    { name: "Refreshing Drink", price: 55, description: "Best paired with any meal" },
-  ],
-};
-
 export function getStallMenu(stall) {
   const fromDirectArray = normalizeMenuItems(stall?.menu || stall?.menuItems);
   if (fromDirectArray.length > 0) return fromDirectArray;
@@ -189,12 +314,11 @@ export function getStallMenu(stall) {
       const normalized = normalizeMenuItems(parsed);
       if (normalized.length > 0) return normalized;
     } catch {
-      // Ignore malformed menu JSON and use fallback template.
+      // Ignore malformed menu JSON and treat it as empty.
     }
   }
 
-  const category = getStallVisual(stall?.cuisine || stall?.type).category;
-  return MENU_TEMPLATES[category] || MENU_TEMPLATES.general;
+  return [];
 }
 
 export function formatCurrency(value) {
