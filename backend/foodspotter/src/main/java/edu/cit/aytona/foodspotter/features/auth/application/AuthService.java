@@ -29,9 +29,9 @@ public class AuthService {
         }
 
         User user = User.builder()
-                .firstname(request.getFirstname())
-                .lastname(request.getLastname())
-                .email(request.getEmail())
+            .firstname(request.getFirstname().trim())
+            .lastname(request.getLastname().trim())
+            .email(request.getEmail().trim().toLowerCase())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(User.Role.USER)
                 .build();
@@ -68,6 +68,7 @@ public class AuthService {
 
     private UserDTO toDTO(User user) {
         return UserDTO.builder()
+            .id(user.getId())
                 .email(user.getEmail())
                 .firstname(user.getFirstname())
                 .lastname(user.getLastname())

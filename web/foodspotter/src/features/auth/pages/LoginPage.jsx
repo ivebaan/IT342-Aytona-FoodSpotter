@@ -37,8 +37,8 @@ export default function LoginPage() {
     setError(null);
     try {
       const res = await login({ email, password });
-      const accessToken = res?.data?.accessToken;
-      const user = res?.data?.user;
+      const accessToken = res?.accessToken;
+      const user = res?.user;
 
       if (!accessToken || !user) {
         throw new Error("Invalid login response from server.");

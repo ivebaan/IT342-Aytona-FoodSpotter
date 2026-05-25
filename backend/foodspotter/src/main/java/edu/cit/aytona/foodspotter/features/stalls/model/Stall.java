@@ -33,6 +33,12 @@ public class Stall {
     @Column(name = "image_url")
     private String imageUrl;
 
+    @Column(name = "image_size_bytes")
+    private Long imageSizeBytes;
+
+    @Column(name = "address")
+    private String address;
+
     @Lob
     @Column(name = "menu_json")
     private String menuJson;

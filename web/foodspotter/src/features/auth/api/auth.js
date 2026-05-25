@@ -12,10 +12,19 @@ export const register = async ({ firstname, lastname, email, password }) => {
     email,
     password,
   });
-  return data;
+  return data?.data;
 };
 
 export const login = async ({ email, password }) => {
   const { data } = await api.post('/auth/login', { email, password });
-  return data;
+  return data?.data;
+};
+
+export const getCurrentUser = async (token) => {
+  const { data } = await api.get('/users/me', {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return data?.data;
 };

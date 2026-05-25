@@ -14,9 +14,18 @@ export const getStalls = async (token) => {
   return data;
 };
 
+export const getAdminStalls = async (token) => {
+  const { data } = await api.get("/stalls/admin/all", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+  return data;
+};
+
 export const createStall = async (
   token,
-  { name, description, cuisine, latitude, longitude },
+  { name, description, cuisine, latitude, longitude, imageUrl, address },
 ) => {
   const { data } = await api.post(
     "/stalls",
@@ -26,6 +35,8 @@ export const createStall = async (
       cuisine,
       latitude: String(latitude),
       longitude: String(longitude),
+      imageUrl,
+      address,
     },
     {
       headers: {
