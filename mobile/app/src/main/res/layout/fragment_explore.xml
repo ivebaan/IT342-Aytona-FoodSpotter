@@ -3,93 +3,77 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="@color/brand_surface"
-    android:padding="20dp">
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="120dp">
+        android:padding="16dp">
 
-        <LinearLayout
+        <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp">
+            android:hint="Search">
 
-            <TextView
-                android:id="@+id/exploreStatus"
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/exploreSearchInput"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:textColor="#4B5563"
-                android:textSize="13sp" />
+                android:inputType="text" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-            <com.google.android.material.textfield.TextInputLayout
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Cuisine"
+            app:endIconMode="dropdown_menu">
+
+            <AutoCompleteTextView
+                android:id="@+id/exploreCuisineField"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:hint="Search">
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/exploreSearchInput"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text" />
-            </com.google.android.material.textfield.TextInputLayout>
+        <Button
+            android:id="@+id/exploreRefreshButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Refresh" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:hint="Cuisine filter"
-                app:endIconMode="dropdown_menu">
+        <ProgressBar
+            android:id="@+id/exploreLoading"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:visibility="gone" />
 
-                <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                    android:id="@+id/exploreCuisineField"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="none" />
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/exploreRefreshButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="14dp"
-                android:text="Refresh"
-                android:textAllCaps="false"
-                app:cornerRadius="16dp"
-                app:backgroundTint="#EA580C" />
-
-            <ProgressBar
-                android:id="@+id/exploreLoading"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:indeterminateTint="#EA580C"
-                android:visibility="gone" />
-        </LinearLayout>
+        <TextView
+            android:id="@+id/exploreStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="Loading stalls..." />
 
         <TextView
             android:id="@+id/exploreEmptyState"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="#FFFFFF"
-            android:padding="18dp"
-            android:text="No stalls match your filters."
-            android:textColor="#6B7280"
-            android:textSize="14sp"
+            android:layout_marginTop="12dp"
+            android:text="No stalls found."
             android:visibility="gone" />
 
         <LinearLayout
             android:id="@+id/exploreResultsContainer"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="12dp"
+            android:orientation="vertical" />
+
     </LinearLayout>
+
 </androidx.core.widget.NestedScrollView>

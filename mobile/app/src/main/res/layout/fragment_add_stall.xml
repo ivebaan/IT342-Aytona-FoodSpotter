@@ -1,163 +1,109 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="@color/brand_surface"
-    android:padding="20dp">
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="120dp">
+        android:padding="16dp">
 
-        <com.google.android.material.card.MaterialCardView
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addStallName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="30dp"
-            app:cardElevation="0dp"
-            app:strokeColor="#F3DDC7"
-            app:strokeWidth="1dp"
-            android:backgroundTint="#FFFFFF">
+            android:hint="Stall name">
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="22dp">
+                android:inputType="textCapWords" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <TextView
-                    android:id="@+id/addStallMessage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Drag and zoom the map, then tap the button below to use the current center point."
-                    android:textColor="#6B7280"
-                    android:textSize="13sp" />
-
-                <TextView
-                    android:id="@+id/addStallLocation"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Selected: none"
-                    android:textColor="#C2410C"
-                    android:textSize="13sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.gms.maps.MapView
-                    android:id="@+id/addStallMap"
-                    android:layout_width="match_parent"
-                    android:layout_height="380dp"
-                    android:layout_marginTop="16dp" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/addStallPickLocationButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="12dp"
-                    android:text="Use map center"
-                    android:textAllCaps="false"
-                    app:cornerRadius="16dp"
-                    app:backgroundTint="#FFF7ED"
-                    android:textColor="#C2410C" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/addStallLoginButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:text="Sign in"
-                    android:textAllCaps="false"
-                    app:cornerRadius="16dp"
-                    app:backgroundTint="#0F766E" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
-
-        <com.google.android.material.card.MaterialCardView
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addStallDescription"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="30dp"
-            app:cardElevation="0dp"
-            app:strokeColor="#F3DDC7"
-            app:strokeWidth="1dp"
-            android:backgroundTint="#FFFFFF">
+            android:layout_marginTop="12dp"
+            android:hint="Description">
 
-            <LinearLayout
+            <com.google.android.material.textfield.TextInputEditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="22dp">
+                android:inputType="textMultiLine"
+                android:minLines="3" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/addStallName"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:hint="Stall name">
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/addStallImageUrl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Image URL">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textUri" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/addStallDescription"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:hint="Description">
+        <com.google.android.material.textfield.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:hint="Cuisine"
+            app:endIconMode="dropdown_menu">
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:minLines="4"
-                        android:gravity="top"
-                        android:inputType="textMultiLine" />
-                </com.google.android.material.textfield.TextInputLayout>
+            <AutoCompleteTextView
+                android:id="@+id/addStallCuisine"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/addStallImageUrl"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:hint="Stall image URL">
+        <com.google.android.gms.maps.MapView
+            android:id="@+id/addStallMap"
+            android:layout_width="match_parent"
+            android:layout_height="220dp"
+            android:layout_marginTop="16dp" />
 
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textUri" />
-                </com.google.android.material.textfield.TextInputLayout>
+        <TextView
+            android:id="@+id/addStallLocation"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Location not selected" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:hint="Cuisine Type"
-                    app:endIconMode="dropdown_menu">
+        <Button
+            android:id="@+id/addStallPickLocationButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Use map center" />
 
-                    <com.google.android.material.textfield.MaterialAutoCompleteTextView
-                        android:id="@+id/addStallCuisine"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="none" />
-                </com.google.android.material.textfield.TextInputLayout>
+        <TextView
+            android:id="@+id/addStallMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp" />
 
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/addStallSubmit"
-                    android:layout_width="match_parent"
-                    android:layout_height="50dp"
-                    android:layout_marginTop="18dp"
-                    android:text="Submit stall"
-                    android:textAllCaps="false"
-                    app:cornerRadius="18dp"
-                    app:backgroundTint="#EA580C" />
-            </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+        <Button
+            android:id="@+id/addStallLoginButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Go to login"
+            android:visibility="gone" />
+
+        <Button
+            android:id="@+id/addStallSubmit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Submit stall" />
+
     </LinearLayout>
-</androidx.core.widget.NestedScrollView>
+</ScrollView>

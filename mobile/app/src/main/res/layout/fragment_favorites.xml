@@ -3,74 +3,48 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:fillViewport="true"
-    android:background="@color/brand_surface"
-    android:padding="20dp">
+    android:fillViewport="true">
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="120dp">
+        android:padding="16dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp">
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
+            <TextView
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="12dp"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:text="Favorites"
+                android:textSize="20sp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:id="@+id/favoritesCount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="0"
-                    android:textColor="#EA580C"
-                    android:textSize="24sp"
-                    android:textStyle="bold" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/favoritesClearButton"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="16dp"
-                    android:text="Clear all"
-                    android:textAllCaps="false"
-                    app:cornerRadius="16dp"
-                    app:backgroundTint="#FFF7ED"
-                    android:textColor="#C2410C" />
-            </LinearLayout>
+            <TextView
+                android:id="@+id/favoritesCount"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0"
+                android:textStyle="bold" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/favoritesEmptyState"
+        <Button
+            android:id="@+id/favoritesClearButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:background="#FFFFFF"
-            android:padding="18dp"
-            android:text="You do not have any favorites yet."
-            android:textColor="#6B7280"
-            android:textSize="14sp"
-            android:visibility="gone" />
-
-        <LinearLayout
-            android:id="@+id/favoritesContainer"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginTop="16dp" />
+            android:layout_marginTop="10dp"
+            android:text="Clear favorites" />
 
         <FrameLayout
             android:id="@+id/favoritesMapContainer"
             android:layout_width="match_parent"
             android:layout_height="260dp"
-            android:layout_marginTop="18dp">
+            android:layout_marginTop="12dp">
 
             <com.google.android.gms.maps.MapView
                 android:id="@+id/favoritesMap"
@@ -79,13 +53,29 @@
 
             <com.google.android.material.floatingactionbutton.FloatingActionButton
                 android:id="@+id/favoritesMapExpand"
-                android:layout_width="44dp"
-                android:layout_height="44dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="end|bottom"
-                android:layout_margin="10dp"
+                android:layout_margin="12dp"
                 android:contentDescription="Expand map"
-                app:srcCompat="@drawable/ic_expand"
-                app:backgroundTint="#FFFFFF" />
+                app:srcCompat="@drawable/ic_expand" />
         </FrameLayout>
+
+        <TextView
+            android:id="@+id/favoritesEmptyState"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="No favorites yet."
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:id="@+id/favoritesContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:orientation="vertical" />
+
     </LinearLayout>
+
 </androidx.core.widget.NestedScrollView>

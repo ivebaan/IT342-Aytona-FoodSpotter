@@ -2,40 +2,41 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:padding="25dp"
+    android:layout_gravity="center">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="200dp"
+        android:src="@drawable/logo_name_below"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Welcome Back!"
+        android:textStyle="bold"
+        android:textColor="@color/black"
+        android:textSize="18sp"
+        android:layout_gravity="center"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Login to continue your food adventure"
+        android:textStyle="bold"
+        android:textColor="#787878"
+        android:textSize="14sp"
+        android:layout_gravity="center"
+        android:layout_marginVertical="10dp"/>
+
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_gradient"
-        android:gravity="center"
         android:orientation="vertical"
-        android:paddingHorizontal="32dp"
-        android:paddingVertical="25dp">
-
-        <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:src="@drawable/logo_nobg"/>
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:padding="30dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Welcome back"
-            android:textSize="12sp"
-            android:textStyle="bold"
-            android:textColor="#6B7280"
-            android:layout_marginBottom="12dp"
-            android:letterSpacing="0.02" />
+        android:padding="10dp">
 
         <TextView
             android:layout_width="wrap_content"
@@ -53,8 +54,7 @@
             android:layout_height="55dp"
             android:drawableStart="@drawable/email"
             android:drawablePadding="10dp"
-            android:drawableTint="#808080"
-            android:hint="  juandelacruz@gmail.com"
+            android:hint="  Enter your email"
             android:inputType="textEmailAddress"
             android:padding="15dp"
             android:textSize="15sp"
@@ -72,75 +72,71 @@
             android:textColor="@color/black"
             android:layout_marginTop="15dp"/>
 
+
+
         <EditText
             android:id="@+id/editPassword"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:drawableStart="@drawable/padlock"
             android:drawablePadding="10dp"
-            android:drawableTint="#808080"
-            android:hint="  ************"
+
+            android:hint="  Enter your password"
             android:inputType="textPassword"
             android:padding="15dp"
             android:textSize="15sp"
             android:background="@drawable/editext"
             android:textColor="#656565"/>
 
+        <TextView
+            android:id="@+id/txtForgotPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Forgot Password?"
+            android:textColor="@color/main_orange"
+            android:textStyle="bold"
+            android:textAlignment="viewEnd"
+            android:layout_marginTop="10dp"/>
+
         <Button
             android:id="@+id/loginSubmitButton"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Sign In"
+            android:text="Login"
             android:textAlignment="center"
             android:textAllCaps="false"
             android:background="@drawable/rounded"
             android:textColor="@color/white"
             android:textStyle="bold"
-            android:layout_marginVertical="25dp"
+            android:textSize="16sp"
+            android:layout_marginVertical="30dp"
             />
 
-
-
         <LinearLayout
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center"
-            android:layout_marginVertical="14dp">
-
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="#E5E7EB" />
+            android:layout_gravity="center">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Need an account?"
-                android:textSize="13sp"
-                android:textColor="#6B7280"
-                android:paddingHorizontal="12dp" />
+                android:text="Don't have an account? "
+                android:textColor="@color/black"
+                android:textStyle="bold"/>
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="1dp"
-                android:layout_weight="1"
-                android:background="#E5E7EB" />
+            <TextView
+                android:id="@+id/loginCreateAccountButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign Up"
+                android:textColor="@color/main_orange"
+                android:textStyle="bold"/>
+
         </LinearLayout>
 
-        <Button
-            android:id="@+id/loginCreateAccountButton"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:text="Create Account"
-            android:textAlignment="center"
-            android:textAllCaps="false"
-            android:background="@drawable/transparent_rounded"
-            android:textColor="@color/main_orange"
-            android:textStyle="bold"
-            android:layout_marginTop="20dp"
-            />
+
+
 
 
     </LinearLayout>

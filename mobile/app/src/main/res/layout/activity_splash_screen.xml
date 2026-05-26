@@ -4,8 +4,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/background_gradient"
-    android:orientation="vertical"
+    android:background="@color/main_orange"
     android:padding="20dp">
 
 
@@ -15,16 +14,7 @@
         android:src="@drawable/logo_nobg"
         android:layout_gravity="center" />
 
-<!--    <Button-->
-<!--        android:layout_width="match_parent"-->
-<!--        android:layout_height="wrap_content"-->
-<!--        android:background="@drawable/transparent_rounded"-->
-<!--        android:text="Get Started"-->
-<!--        android:textAllCaps="false"-->
-<!--        android:textColor="@color/white"-->
-<!--        android:textStyle="bold" -->
-<!--        android:layout_marginTop="100dp"-->
-<!--        />-->
+
 
 </LinearLayout>
 
