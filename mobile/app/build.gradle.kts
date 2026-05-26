@@ -11,10 +11,12 @@ val localProperties = Properties().apply {
     }
 }
 
-val mapsApiKey = providers.gradleProperty("MAPS_API_KEY")
-    .orElse(localProperties.getProperty("MAPS_API_KEY"))
-    .orNull
-    .orEmpty()
+val mapsApiKey = providers.gradleProperty("MAPS_API_KEY").orNull
+    ?: localProperties.getProperty("MAPS_API_KEY").orEmpty()
+
+val apiBaseUrl = providers.gradleProperty("API_BASE_URL").orNull
+    ?: localProperties.getProperty("API_BASE_URL").orEmpty()
+    .ifBlank { "http://10.0.2.2:8081/" }
 
 android {
     namespace = "com.aytona.foodspotter"
@@ -34,6 +36,7 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
+        buildConfigField("String", "API_BASE_URL", "\"$apiBaseUrl\"")
     }
 
     buildTypes {
@@ -53,6 +56,7 @@ android {
         jvmTarget = "1.8"
     }
     buildFeatures {
+        buildConfig = true
         viewBinding = true
     }
 }

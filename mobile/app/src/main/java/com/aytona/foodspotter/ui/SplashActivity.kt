@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.aytona.foodspotter.databinding.ActivitySplashScreenBinding
+import com.aytona.foodspotter.ui.auth.LoginActivity
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
@@ -17,8 +18,8 @@ class SplashActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         lifecycleScope.launch {
-            delay(5000)
-            startActivity(Intent(this@SplashActivity, LandingActivity::class.java))
+            delay(3000)
+            startActivity(Intent(this@SplashActivity, LoginActivity::class.java))
             finish()
         }
     }

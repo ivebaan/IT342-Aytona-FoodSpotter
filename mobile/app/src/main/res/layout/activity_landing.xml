@@ -8,7 +8,7 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@drawable/background_gradient"
+        android:background="@color/main_orange"
         android:gravity="center"
         android:orientation="vertical"
         android:paddingHorizontal="32dp"
@@ -32,15 +32,15 @@
             android:id="@+id/btnSignIn"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:text="Sign In"
-            android:textAllCaps="false"
-            android:textSize="16sp"
-            android:textColor="@color/main_orange"
+            android:layout_marginTop="20dp"
+            android:layout_marginBottom="20dp"
             android:background="@drawable/white_button"
             android:elevation="6dp"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="20dp"
-            android:textStyle="bold"/>
+            android:text="Sign In"
+            android:textAllCaps="false"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
         <Button
             android:id="@+id/btnCreateAccount"
@@ -51,7 +51,7 @@
             android:elevation="6dp"
             android:text="Create Account"
             android:textAllCaps="false"
-            android:textColor="#FFFFFF"
+            android:textColor="@color/white"
             android:textSize="16sp"
             android:textStyle="bold" />
     </LinearLayout>
