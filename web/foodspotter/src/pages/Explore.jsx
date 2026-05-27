@@ -1,7 +1,9 @@
 import { useEffect, useState, useMemo } from "react";
+import { useSearchParams } from "react-router-dom";
 import { getStalls } from "../features/stalls/api/stalls";
 import { CUISINE_OPTIONS } from "../constants/cuisineOptions";
 import AppLayout from "../components/AppLayout";
+import RecommendedStallsRow from "../components/RecommendedStallsRow";
 import {
   formatCurrency,
   getStallImage,
@@ -9,11 +11,16 @@ import {
 } from "../features/stalls/utils/stallPresentation";
 
 export default function Explore() {
+  const [searchParams, setSearchParams] = useSearchParams();
   const [stalls, setStalls] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedCuisines, setSelectedCuisines] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
   const [selectedStall, setSelectedStall] = useState(null);
+
+  useEffect(() => {
+    setSearchQuery(searchParams.get("q") || "");
+  }, [searchParams]);
 
   useEffect(() => {
     const loadStalls = async () => {
@@ -81,14 +88,25 @@ export default function Explore() {
   const clearFilters = () => {
     setSelectedCuisines([]);
     setSearchQuery("");
+    setSearchParams({});
   };
 
   const closeDetails = () => setSelectedStall(null);
   const selectedStallMenu = selectedStall ? getStallMenu(selectedStall) : [];
+  const recommendedStalls = useMemo(() => filteredStalls.slice(0, 6), [filteredStalls]);
 
   return (
     <AppLayout title="Explore" subtitle="Discover food spots by cuisine">
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="space-y-6">
+        <RecommendedStallsRow
+          title="Recommended for you"
+          subtitle="Suggested food stalls based on your current search and cuisine filters."
+          stalls={recommendedStalls}
+          onSelectStall={setSelectedStall}
+          onViewAll={() => setSearchParams({})}
+        />
+
+        <div className="grid grid-cols-1 gap-6 lg:grid-cols-4">
         {/* Filters Sidebar */}
         <div className="lg:col-span-1">
           <div className="sticky top-24 space-y-6 bg-white rounded-2xl border border-gray-100 p-6">
@@ -98,7 +116,11 @@ export default function Explore() {
                 type="text"
                 placeholder="Search by name or cuisine..."
                 value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
+                onChange={(e) => {
+                  const value = e.target.value;
+                  setSearchQuery(value);
+                  setSearchParams(value ? { q: value } : {});
+                }}
                 className="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
@@ -232,6 +254,7 @@ export default function Explore() {
           <div className="mt-6 text-center text-sm text-gray-500">
             Showing {filteredStalls.length} of {stalls.length} food spots
           </div>
+        </div>
         </div>
       </div>
 

@@ -120,23 +120,20 @@ export default function AppSidebar() {
   const initials = `${user.firstname?.[0] || "F"}${user.lastname?.[0] || "S"}`;
 
   return (
-    <aside className="app-sidebar relative flex w-full flex-col overflow-hidden border-r border-orange-100/70 bg-white/95 shadow-[18px_0_50px_rgba(15,23,42,0.05)] backdrop-blur-2xl md:min-h-screen md:w-80">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-[radial-gradient(circle_at_top_right,rgba(251,146,60,0.22),transparent_45%),linear-gradient(180deg,rgba(255,247,237,0.95),rgba(255,255,255,0))]" />
+    <aside className="app-sidebar relative flex w-full flex-col overflow-hidden border-r border-slate-200/70 bg-white shadow-[18px_0_50px_rgba(15,23,42,0.05)] md:min-h-screen md:w-72">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-28 bg-[radial-gradient(circle_at_top_right,rgba(251,146,60,0.18),transparent_45%)]" />
 
-      <div className="relative border-b border-orange-100/40 px-6 py-6">
-        <div className="flex items-start gap-3 rounded-2xl border border-white/50 bg-gradient-to-br from-white via-white/95 to-orange-50/40 p-5 shadow-[0_20px_45px_rgba(15,23,42,0.08)] backdrop-blur-xl transition-all duration-300 hover:shadow-[0_24px_48px_rgba(251,146,60,0.12)]">
+      <div className="relative border-b border-slate-100 px-5 py-5">
+        <div className="flex items-start gap-3 rounded-2xl border border-slate-100 bg-white p-4 shadow-sm transition-all duration-300 hover:shadow-md">
           <img
             src="/image.png"
             alt="FoodSpotter"
-            className="h-12 w-18 shrink-0 shadow-md shadow-orange-500/15 ring-1 ring-white/60"
+            className="h-11 w-16 shrink-0 rounded-lg shadow-md shadow-orange-500/15 ring-1 ring-white/60"
           />
           <div className="min-w-0 flex-1">
-            <div className="flex items-center justify-between gap-3">
-              <p className="truncate text-base font-bold tracking-tight text-slate-950">
-                FoodSpotter
-              </p>
-              
-            </div>
+            <p className="truncate text-base font-bold tracking-tight text-slate-950">
+              FoodSpotter
+            </p>
             <p className="mt-1.5 text-xs leading-relaxed text-slate-500">
               Discover & manage the best food spots
             </p>
@@ -144,7 +141,7 @@ export default function AppSidebar() {
         </div>
       </div>
 
-      <nav className="relative flex flex-row gap-2 overflow-x-auto px-4 py-4 md:flex-col md:overflow-visible md:px-6 md:py-6">
+      <nav className="relative flex flex-row gap-2 overflow-x-auto px-4 py-4 md:flex-col md:overflow-visible md:px-5 md:py-5">
         <div className="hidden px-1 pb-2 pt-1 text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400 md:block">
           Main Navigation
         </div>
@@ -156,13 +153,13 @@ export default function AppSidebar() {
             className={({ isActive }) =>
               `${navItemBaseClass} border transition-all duration-300 ${
                 isActive
-                  ? "border-orange-300 bg-gradient-to-r from-orange-500 to-rose-500 text-white shadow-[0_12px_28px_rgba(249,115,22,0.25)] scale-105"
-                  : "border-transparent bg-white/60 text-slate-600 shadow-sm hover:border-orange-100/60 hover:bg-orange-50/90 hover:text-slate-900 hover:shadow-md hover:scale-[1.02]"
+                  ? "border-orange-200 bg-orange-50 text-orange-700 shadow-sm"
+                  : "border-transparent bg-white text-slate-600 hover:border-orange-100 hover:bg-orange-50/70 hover:text-slate-900"
               }`
             }
           >
             <span
-              className={`inline-flex items-center justify-center rounded-lg p-2.5 transition-all duration-300 ${item.to === "/dashboard" ? "bg-orange-100/70 text-orange-600" : "bg-orange-50 text-orange-500"}`}
+              className={`inline-flex items-center justify-center rounded-lg p-2.5 transition-all duration-300 ${item.to === "/dashboard" ? "bg-orange-100 text-orange-600" : "bg-orange-50 text-orange-500"}`}
             >
               <SidebarIcon name={item.icon} />
             </span>
@@ -171,7 +168,7 @@ export default function AppSidebar() {
         ))}
 
         {(user.role === "VENDOR" || user.role === "OWNER" || user.role === "ADMIN" || user.role === "SUPER_ADMIN") && (
-          <div className="mt-3 rounded-xl border border-emerald-200/60 bg-gradient-to-br from-emerald-50/70 to-emerald-50/40 p-4 shadow-sm transition-all duration-300 md:mt-4">
+          <div className="mt-3 rounded-2xl border border-emerald-100 bg-emerald-50/70 p-4 shadow-sm transition-all duration-300 md:mt-4">
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-700">
               Vendor Tools
             </p>
@@ -180,12 +177,12 @@ export default function AppSidebar() {
               className={({ isActive }) =>
                 `${navItemBaseClass} mt-4 border transition-all duration-300 ${
                   isActive
-                    ? "border-emerald-300 bg-emerald-600 text-white shadow-[0_12px_28px_rgba(16,185,129,0.25)] scale-105"
-                    : "border-emerald-200/70 bg-white text-emerald-800 shadow-sm hover:bg-emerald-100/80 hover:text-emerald-950 hover:shadow-md hover:scale-[1.02]"
+                    ? "border-emerald-300 bg-emerald-100 text-emerald-900 shadow-sm"
+                    : "border-emerald-100 bg-white text-emerald-800 hover:bg-emerald-50 hover:text-emerald-950"
                 }`
               }
             >
-              <span className="inline-flex items-center justify-center rounded-lg p-2.5 transition-all duration-300 bg-emerald-100/60 text-emerald-600">
+              <span className="inline-flex items-center justify-center rounded-lg p-2.5 transition-all duration-300 bg-emerald-100 text-emerald-600">
                 <svg
                   viewBox="0 0 24 24"
                   className="h-5 w-5"
@@ -206,7 +203,7 @@ export default function AppSidebar() {
         )}
 
         {isAdmin && (
-          <div className="mt-3 rounded-xl border border-indigo-200/60 bg-gradient-to-br from-indigo-50/70 to-indigo-50/40 p-4 shadow-sm transition-all duration-300 md:mt-4">
+          <div className="mt-3 rounded-2xl border border-indigo-100 bg-indigo-50/70 p-4 shadow-sm transition-all duration-300 md:mt-4">
             <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-indigo-700">
               Admin Controls
             </p>
@@ -215,12 +212,12 @@ export default function AppSidebar() {
               className={({ isActive }) =>
                 `${navItemBaseClass} mt-4 border transition-all duration-300 ${
                   isActive
-                    ? "border-indigo-300 bg-indigo-600 text-white shadow-[0_12px_28px_rgba(79,70,229,0.25)] scale-105"
-                    : "border-indigo-200/70 bg-white text-indigo-800 shadow-sm hover:bg-indigo-100/80 hover:text-indigo-950 hover:shadow-md hover:scale-[1.02]"
+                    ? "border-indigo-300 bg-indigo-100 text-indigo-900 shadow-sm"
+                    : "border-indigo-100 bg-white text-indigo-800 hover:bg-indigo-50 hover:text-indigo-950"
                 }`
               }
             >
-              <span className="inline-flex items-center justify-center rounded-lg p-2.5 transition-all duration-300 bg-indigo-100/60 text-indigo-600">
+              <span className="inline-flex items-center justify-center rounded-lg p-2.5 transition-all duration-300 bg-indigo-100 text-indigo-600">
                 <svg
                   viewBox="0 0 24 24"
                   className="h-5 w-5"
@@ -241,13 +238,13 @@ export default function AppSidebar() {
         )}
       </nav>
 
-      <div className="relative mt-auto border-t border-orange-100/40 p-6">
-        <div className="mb-4 rounded-xl border border-slate-200/60 bg-gradient-to-br from-white to-slate-50/50 p-4 shadow-sm transition-all duration-300">
+      <div className="relative mt-auto border-t border-slate-100 p-5">
+        <div className="rounded-2xl border border-slate-100 bg-slate-50/90 p-4 shadow-sm transition-all duration-300">
           <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400">
             Session
           </p>
           <div className="mt-3 flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-gradient-to-br from-orange-500 to-rose-500 text-xs font-bold text-white shadow-md shadow-orange-500/20 ring-2 ring-white/20">
+            <div className="flex h-11 w-11 items-center justify-center rounded-full bg-orange-500 text-xs font-bold text-white shadow-md shadow-orange-500/20 ring-2 ring-white/30">
               {initials.toUpperCase()}
             </div>
             <div className="min-w-0">
@@ -264,7 +261,7 @@ export default function AppSidebar() {
         <button
           type="button"
           onClick={handleLogout}
-          className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-900 px-4 py-3.5 text-sm font-semibold text-white shadow-[0_14px_32px_rgba(15,23,42,0.2)] transition-all duration-300 hover:shadow-[0_16px_36px_rgba(15,23,42,0.25)] hover:-translate-y-0.5 active:translate-y-0"
+          className="mt-4 w-full inline-flex items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm font-semibold text-slate-700 shadow-sm transition hover:border-orange-200 hover:bg-orange-50 hover:text-orange-700"
         >
           <svg
             viewBox="0 0 24 24"
@@ -280,7 +277,7 @@ export default function AppSidebar() {
             <path d="M16 17l5-5-5-5" />
             <path d="M21 12H9" />
           </svg>
-          Sign out
+          Logout
         </button>
       </div>
     </aside>

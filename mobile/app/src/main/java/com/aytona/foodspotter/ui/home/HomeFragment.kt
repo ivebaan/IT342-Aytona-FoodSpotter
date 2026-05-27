@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.util.Log
+import android.util.TypedValue
 import android.widget.Toast
+import android.widget.TextView
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
@@ -125,15 +127,58 @@ class HomeFragment : Fragment() {
 
     private fun renderScreen() {
         updateStats()
+        renderCuisineChips()
         renderMap()
         renderSelectedStall()
         renderStallList()
+    }
+
+    private fun renderCuisineChips() {
+        binding.homeCuisineChipsContainer.removeAllViews()
+
+        val cuisines = stalls
+            .mapNotNull { it.cuisine?.trim() }
+            .filter { it.isNotBlank() }
+            .distinctBy { it.lowercase() }
+
+        binding.homeCuisineChipsContainer.addView(createCuisineChip("All", selected = true))
+        cuisines.forEach { cuisine ->
+            binding.homeCuisineChipsContainer.addView(createCuisineChip(cuisine))
+        }
+    }
+
+    private fun createCuisineChip(text: String, selected: Boolean = false): TextView {
+        return TextView(requireContext()).apply {
+            val horizontalPadding = (14 * resources.displayMetrics.density).toInt()
+            val verticalPadding = (8 * resources.displayMetrics.density).toInt()
+            val endMargin = (8 * resources.displayMetrics.density).toInt()
+
+            layoutParams = ViewGroup.MarginLayoutParams(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+            ).apply {
+                marginEnd = endMargin
+            }
+            setPadding(horizontalPadding, verticalPadding, horizontalPadding, verticalPadding)
+            this.text = text
+            textSize = 12f
+            setTextColor(if (selected) 0xFFC2410C.toInt() else 0xFF374151.toInt())
+            setBackgroundResource(if (selected) R.drawable.bg_chip_soft else R.drawable.white_button)
+            setTextSize(TypedValue.COMPLEX_UNIT_SP, 12f)
+            setTypeface(typeface, android.graphics.Typeface.BOLD)
+            isAllCaps = false
+        }
     }
 
     private fun updateStats() {
         val favorites = favoritesStore.getFavorites()
         binding.homeStatStalls.text = stalls.size.toString()
         binding.homeStatFavorites.text = favorites.size.toString()
+        binding.homeNearbyStallsCount.text = if (stalls.size == 1) {
+            "1 stall found"
+        } else {
+            "${stalls.size} stalls found"
+        }
         binding.homeStatRole.text = sessionManager.currentUser()?.role?.takeIf { it.isNotBlank() } ?: "Guest"
         binding.homeSubheading.text = if (sessionManager.isLoggedIn) {
             "Signed in as ${sessionManager.currentUser()?.email ?: "guest"}."
