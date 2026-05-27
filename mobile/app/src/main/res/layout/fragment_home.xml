@@ -13,28 +13,19 @@
         android:padding="16dp"
         android:paddingBottom="120dp">
 
-        <com.google.android.material.card.MaterialCardView
+        <LinearLayout
             android:id="@+id/homeHeaderHidden"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:cardCornerRadius="28dp"
-            app:cardElevation="10dp"
-            app:cardUseCompatPadding="true"
-            app:strokeColor="#F3DDC7"
-            app:strokeWidth="1dp"
-            android:backgroundTint="#FFFFFF">
+            android:orientation="vertical"
+            android:padding="18dp"
+            android:background="#FFFFFF">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:padding="18dp">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
 
                     <LinearLayout
                         android:layout_width="0dp"
@@ -67,134 +58,85 @@
                         android:padding="6dp"
                         android:src="@drawable/ic_notifications_black_24dp"
                         android:tint="#111827" />
-                </LinearLayout>
+            </LinearLayout>
 
-                <TextView
-                    android:id="@+id/homeSubheading"
-                    android:layout_width="match_parent"
+            <TextView
+                android:id="@+id/homeSubheading"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="Discover food stalls near you."
+                android:textColor="#6B7280"
+                android:textSize="13sp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Discover food stalls near you."
-                    android:textColor="#6B7280"
-                    android:textSize="13sp" />
+                    android:layout_weight="1"
+                    app:boxBackgroundMode="outline"
+                    app:boxCornerRadiusBottomEnd="18dp"
+                    app:boxCornerRadiusBottomStart="18dp"
+                    app:boxCornerRadiusTopEnd="18dp"
+                    app:boxCornerRadiusTopStart="18dp">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="50dp"
+                        android:hint="Search food, cuisine, or location…"
+                        android:inputType="text"
+                        android:gravity="center"
+                        android:textAlignment="center"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="0dp"
+                        android:paddingTop="0dp"
+                        android:paddingBottom="0dp"
+                        android:textColor="#111827"
+                        android:textColorHint="#94A3B8" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <ImageButton
+                    android:id="@+id/homeRefreshButton"
+                    android:layout_width="44dp"
+                    android:layout_height="44dp"
+                    android:layout_marginStart="10dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="Refresh stalls"
+                    android:padding="8dp"
+                    android:src="@android:drawable/ic_popup_sync"
+                    android:tint="#111827" />
+
+
+            </LinearLayout>
+
+            <HorizontalScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:paddingStart="2dp"
+                android:paddingEnd="2dp"
+                android:scrollbars="none">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:id="@+id/homeCuisineChipsContainer"
+                    android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:orientation="horizontal"
-                    android:gravity="center_vertical">
-
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        app:boxBackgroundMode="outline"
-                        app:boxCornerRadiusBottomEnd="18dp"
-                        app:boxCornerRadiusBottomStart="18dp"
-                        app:boxCornerRadiusTopEnd="18dp"
-                        app:boxCornerRadiusTopStart="18dp"
-                        app:startIconDrawable="@android:drawable/ic_menu_search"
-                        android:layout_gravity="center">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="text"
-                            android:textColor="#111827"
-                            android:textColorHint="#94A3B8"
-                            android:hint="       Search food, cuisine, or location…"
-                            />
-                    </com.google.android.material.textfield.TextInputLayout>
-
-                    <ImageButton
-                        android:id="@+id/homeRefreshButton"
-                        android:layout_width="44dp"
-                        android:layout_height="44dp"
-                        android:layout_marginStart="10dp"
-                        android:background="@android:color/transparent"
-                        android:contentDescription="Refresh stalls"
-                        android:padding="8dp"
-                        android:src="@android:drawable/ic_popup_sync"
-                        android:tint="#111827" />
-
-
+                    android:orientation="horizontal">
                 </LinearLayout>
+            </HorizontalScrollView>
 
-                <HorizontalScrollView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
-                    android:scrollbars="none">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            android:background="@drawable/bg_chip_soft"
-                            android:paddingHorizontal="14dp"
-                            android:paddingVertical="8dp"
-                            android:text="All"
-                            android:textColor="#C2410C"
-                            android:textSize="12sp"
-                            android:textStyle="bold" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            android:background="@drawable/white_button"
-                            android:paddingHorizontal="14dp"
-                            android:paddingVertical="8dp"
-                            android:text="Street Food"
-                            android:textColor="#374151"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            android:background="@drawable/white_button"
-                            android:paddingHorizontal="14dp"
-                            android:paddingVertical="8dp"
-                            android:text="Filipino"
-                            android:textColor="#374151"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginEnd="8dp"
-                            android:background="@drawable/white_button"
-                            android:paddingHorizontal="14dp"
-                            android:paddingVertical="8dp"
-                            android:text="Drinks"
-                            android:textColor="#374151"
-                            android:textSize="12sp" />
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:background="@drawable/white_button"
-                            android:paddingHorizontal="14dp"
-                            android:paddingVertical="8dp"
-                            android:text="Desserts"
-                            android:textColor="#374151"
-                            android:textSize="12sp" />
-                    </LinearLayout>
-                </HorizontalScrollView>
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
@@ -268,14 +210,14 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
+            </LinearLayout>
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="10dp"
-                    android:orientation="horizontal"
-                    android:visibility="gone">
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
 
                     <com.google.android.material.card.MaterialCardView
                         android:layout_width="0dp"
@@ -349,79 +291,64 @@
                                 android:textStyle="bold" />
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
-                </LinearLayout>
-
-                <TextView
-                    android:id="@+id/homeAuthBanner"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:background="#FFF7ED"
-                    android:padding="12dp"
-                    android:textColor="#9A3412"
-                    android:textSize="13sp"
-                    android:visibility="gone" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/homeGoToAuthButton"
-                    android:layout_width="match_parent"
-                    android:layout_height="48dp"
-                    android:layout_marginTop="10dp"
-                    android:text="Sign in"
-                    android:textAllCaps="false"
-                    app:cornerRadius="16dp"
-                    app:backgroundTint="#EA580C"
-                    android:visibility="gone" />
-
-                <ProgressBar
-                    android:id="@+id/homeLoading"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
-                    android:indeterminateTint="#EA580C"
-                    android:visibility="gone" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
 
-        <com.google.android.material.card.MaterialCardView
+            <TextView
+                android:id="@+id/homeAuthBanner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="#FFF7ED"
+                android:padding="12dp"
+                android:textColor="#9A3412"
+                android:textSize="13sp"
+                android:visibility="gone" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/homeGoToAuthButton"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:layout_marginTop="10dp"
+                android:text="Sign in"
+                android:textAllCaps="false"
+                app:cornerRadius="16dp"
+                app:backgroundTint="#EA580C"
+                android:visibility="gone" />
+
+            <ProgressBar
+                android:id="@+id/homeLoading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:indeterminateTint="#EA580C"
+                android:visibility="gone" />
+        </LinearLayout>
+
+        <FrameLayout
             android:id="@+id/homeMapContainer"
             android:layout_width="match_parent"
             android:layout_height="360dp"
             android:layout_marginTop="16dp"
-            app:cardCornerRadius="30dp"
-            app:cardElevation="10dp"
-            app:cardUseCompatPadding="true"
-            app:strokeColor="#F3DDC7"
-            app:strokeWidth="1dp"
-            android:backgroundTint="#FFFFFF">
+            android:background="#FFFFFF">
 
-            <FrameLayout
+            <com.google.android.gms.maps.MapView
+                android:id="@+id/homeMap"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
+                android:layout_height="match_parent" />
 
-                <com.google.android.gms.maps.MapView
-                    android:id="@+id/homeMap"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
 
-                <View
-                    android:layout_width="18dp"
-                    android:layout_height="18dp"
-                    android:layout_gravity="center"
-                    android:background="#2F80ED" />
 
-                <com.google.android.material.floatingactionbutton.FloatingActionButton
-                    android:id="@+id/homeMapExpand"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="end|bottom"
-                    android:layout_margin="14dp"
-                    android:contentDescription="Expand map"
-                    app:srcCompat="@drawable/ic_expand"
-                    app:backgroundTint="#FFFFFF" />
-            </FrameLayout>
-        </com.google.android.material.card.MaterialCardView>
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/homeMapExpand"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="end|bottom"
+                android:layout_margin="14dp"
+                android:contentDescription="Expand map"
+                app:srcCompat="@drawable/ic_expand"
+                app:backgroundTint="#FFFFFF" />
+        </FrameLayout>
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/homeSelectedCard"
@@ -495,11 +422,11 @@
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            app:cardCornerRadius="30dp"
-            app:cardElevation="12dp"
-            app:cardUseCompatPadding="true"
-            app:strokeColor="#F3DDC7"
+            android:layout_marginTop="12dp"
+            app:cardCornerRadius="22dp"
+            app:cardElevation="6dp"
+            app:cardUseCompatPadding="false"
+            app:strokeColor="#E9E2D8"
             app:strokeWidth="1dp"
             android:backgroundTint="#FFFFFF">
 
@@ -507,7 +434,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="18dp">
+                android:padding="14dp">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -521,36 +448,28 @@
                         android:layout_weight="1"
                         android:text="Nearby Stalls"
                         android:textColor="#111827"
-                        android:textSize="18sp"
+                        android:textSize="17sp"
                         android:textStyle="bold" />
 
                     <TextView
+                        android:id="@+id/homeNearbyStallsCount"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_chip_soft"
-                        android:paddingHorizontal="10dp"
-                        android:paddingVertical="4dp"
-                        android:text="20+ stalls found"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="3dp"
                         android:textColor="#9A3412"
                         android:textSize="11sp"
                         android:textStyle="bold" />
                 </LinearLayout>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="Recommended for you"
-                    android:textColor="#6B7280"
-                    android:textSize="12sp" />
-
-                <TextView
                     android:id="@+id/homeEmptyState"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="10dp"
                     android:background="#FFF7ED"
-                    android:padding="16dp"
+                    android:padding="12dp"
                     android:text="No stalls available right now."
                     android:textColor="#6B7280"
                     android:visibility="gone" />
@@ -559,7 +478,7 @@
                     android:id="@+id/homeStallsContainer"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="10dp"
                     android:orientation="vertical" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

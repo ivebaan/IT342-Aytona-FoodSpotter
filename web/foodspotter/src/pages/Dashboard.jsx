@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -15,6 +15,7 @@ import {
 } from "../features/stalls/utils/stallPresentation";
 import { CUISINE_OPTIONS } from "../constants/cuisineOptions";
 import AppLayout from "../components/AppLayout";
+import RecommendedStallsRow from "../components/RecommendedStallsRow";
 import { useAuth } from "../features/auth/hooks/useAuth";
 import {
   addFavorite as storeFavorite,
@@ -251,6 +252,14 @@ export default function Dashboard() {
   }, [primaryAttribution, primaryTileUrl]);
 
   const currentEmail = currentUser?.email || "";
+
+  const recommendedStalls = useMemo(
+    () =>
+      stalls
+        .filter((stall) => String(stall?.status || "PENDING").toUpperCase() === "APPROVED")
+        .slice(0, 8),
+    [stalls],
+  );
 
   const isFavorite = (id) => {
     if (id == null) return false;
@@ -653,12 +662,22 @@ export default function Dashboard() {
               </button>
             </div>
           )}
+
+          <div className="absolute bottom-4 left-4 right-4 z-10 md:right-112">
+            <RecommendedStallsRow
+              stalls={recommendedStalls}
+              title="Recommended for you"
+              subtitle="Suggested food stalls based on what is currently available."
+              onSelectStall={setSelectedStall}
+              onViewAll={() => navigate("/explore")}
+            />
+          </div>
         </div>
 
         {/* Right-side panels */}
         <div className="fixed left-4 right-4 md:left-auto md:right-4 md:w-[24rem] top-20 bottom-4 z-1200 flex flex-col gap-3 pointer-events-none">
           {selectedStall && (
-            <div className="pointer-events-auto overflow-hidden rounded-[1.5rem] border border-white/60 bg-white/90 shadow-[0_24px_80px_rgba(15,23,42,0.18)] backdrop-blur-xl">
+            <div className="pointer-events-auto overflow-hidden rounded-3xl border border-white/60 bg-white/90 shadow-[0_24px_80px_rgba(15,23,42,0.18)] backdrop-blur-xl">
               <div className="relative">
                 <img
                   src={getStallImage(selectedStall)}
@@ -687,7 +706,7 @@ export default function Dashboard() {
                   <h3 className="text-lg font-bold text-slate-900">
                     {selectedStall.name}
                   </h3>
-                  <span className="rounded-full border border-orange-200 bg-gradient-to-r from-orange-50 to-rose-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-orange-700">
+                  <span className="rounded-full border border-orange-200 bg-linear-to-r from-orange-50 to-rose-50 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide text-orange-700">
                     {getStallVisual(selectedStall.cuisine).label}
                   </span>
                 </div>
@@ -752,7 +771,7 @@ export default function Dashboard() {
                 </div>
 
                 {canEditSelectedStall && (
-                  <div className="mt-4 rounded-3xl border border-orange-100 bg-gradient-to-br from-orange-50/80 to-white p-4 shadow-inner">
+                  <div className="mt-4 rounded-3xl border border-orange-100 bg-linear-to-br from-orange-50/80 to-white p-4 shadow-inner">
                     <div className="mb-3 flex items-center justify-between gap-2">
                       <div>
                         <p className="text-sm font-semibold text-orange-900">
@@ -820,7 +839,7 @@ export default function Dashboard() {
                         <button
                           type="submit"
                           disabled={stallSaving}
-                          className="inline-flex flex-1 items-center justify-center rounded-xl bg-gradient-to-r from-orange-500 to-rose-500 px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+                          className="inline-flex flex-1 items-center justify-center rounded-xl bg-linear-to-r from-orange-500 to-rose-500 px-3 py-2 text-xs font-semibold text-white shadow-lg shadow-orange-500/20 hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
                         >
                           {stallSaving ? "Saving..." : "Save stall details"}
                         </button>
@@ -832,8 +851,8 @@ export default function Dashboard() {
             </div>
           )}
 
-          <div className="pointer-events-auto overflow-hidden rounded-[1.5rem] border border-white/70 bg-white/90 shadow-[0_24px_80px_rgba(15,23,42,0.16)] backdrop-blur-xl">
-            <div className="flex items-center justify-between gap-3 border-b border-slate-100 px-4 py-3.5 bg-gradient-to-r from-white to-slate-50/60">
+          <div className="pointer-events-auto overflow-hidden rounded-3xl border border-white/70 bg-white/90 shadow-[0_24px_80px_rgba(15,23,42,0.16)] backdrop-blur-xl">
+            <div className="flex items-center justify-between gap-3 border-b border-slate-100 bg-linear-to-r from-white to-slate-50/60 px-4 py-3.5">
               <div>
                 <h3 className="text-sm font-semibold text-slate-900">
                   {showVendorForm ? "Vendor Onboarding" : "Vendor Setup"}
@@ -888,7 +907,7 @@ export default function Dashboard() {
                     <button
                       type="button"
                       onClick={() => setShowVendorForm(true)}
-                      className="w-full rounded-xl bg-gradient-to-r from-orange-500 to-rose-500 px-3 py-2.5 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 transition-transform hover:-translate-y-0.5"
+                      className="w-full rounded-xl bg-linear-to-r from-orange-500 to-rose-500 px-3 py-2.5 text-sm font-semibold text-white shadow-lg shadow-orange-500/20 transition-transform hover:-translate-y-0.5"
                     >
                       Add Your Stall
                     </button>
@@ -993,7 +1012,7 @@ export default function Dashboard() {
                       <button
                         type="submit"
                         disabled={submitting}
-                        className="w-full inline-flex items-center justify-center rounded-xl bg-gradient-to-r from-orange-500 to-rose-500 px-3 py-2.5 text-xs font-semibold text-white shadow-lg shadow-orange-500/20 transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
+                        className="w-full inline-flex items-center justify-center rounded-xl bg-linear-to-r from-orange-500 to-rose-500 px-3 py-2.5 text-xs font-semibold text-white shadow-lg shadow-orange-500/20 transition-transform hover:-translate-y-0.5 disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         {submitting
                           ? "Submitting..."

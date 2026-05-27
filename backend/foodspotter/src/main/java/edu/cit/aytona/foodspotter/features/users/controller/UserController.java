@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestController
 @RequestMapping("/users")
@@ -27,11 +28,13 @@ public class UserController {
 
     @GetMapping("/me")
     public ResponseEntity<ApiResponse<UserDTO>> me(@AuthenticationPrincipal UserDetails userDetails) {
+        requireAuthenticatedUser(userDetails);
         return ResponseEntity.ok(ApiResponse.ok(userService.getCurrentUser(userDetails.getUsername())));
     }
 
     @DeleteMapping("/me")
     public ResponseEntity<ApiResponse<Void>> deleteMe(@AuthenticationPrincipal UserDetails userDetails) {
+        requireAuthenticatedUser(userDetails);
         userService.deleteMyAccount(userDetails.getUsername());
         return ResponseEntity.ok(ApiResponse.ok(null));
     }
@@ -40,6 +43,7 @@ public class UserController {
     public ResponseEntity<ApiResponse<Void>> deleteUser(
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id) {
+        requireAuthenticatedUser(userDetails);
         userService.deleteAccount(userDetails.getUsername(), id);
         return ResponseEntity.ok(ApiResponse.ok(null));
     }
@@ -49,7 +53,14 @@ public class UserController {
             @AuthenticationPrincipal UserDetails userDetails,
             @PathVariable Long id,
             @Valid @RequestBody RoleUpdateRequest request) {
+        requireAuthenticatedUser(userDetails);
         UserDTO updated = userService.updateRole(userDetails.getUsername(), id, request);
         return ResponseEntity.status(HttpStatus.OK).body(ApiResponse.ok(updated));
+    }
+
+    private void requireAuthenticatedUser(UserDetails userDetails) {
+        if (userDetails == null) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "Authentication required");
+        }
     }
 }
